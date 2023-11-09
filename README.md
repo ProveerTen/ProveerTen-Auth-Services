@@ -1,4 +1,4 @@
-# ProveerTen-Chat-Services.
+# ProveerTen-Auth-Service.
 
 <<<<<<< HEAD
 # Proyecto Formativo ProveerTen
