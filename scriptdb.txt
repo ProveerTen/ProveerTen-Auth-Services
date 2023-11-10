@@ -1,0 +1,52 @@
+create database ProveerTen;
+use ProveerTen; 
+
+create table Provider (
+nit_provider char(15) not null,
+email_provider varchar (55) primary key, 
+name_provider varchar (50) not null,
+last_name_provider varchar (40) not null,
+name_company varchar (100) not null,
+city_provider varchar (40) not null,
+password_provider varchar (100),
+profile_photo_provider varchar (100) null,
+cover_photo_provier varchar (100) null,
+description_provider varchar(1000)
+);
+
+create table ProviderPhone (
+number_provider varchar (15),
+fk_phone_email_provider varchar (55),
+foreign key (fk_Phone_email_Provider) references Provider (email_Provider)
+);
+
+create table ProviderAddress (
+neighborhood varchar (40) not null,
+street varchar (30) not null,
+number_street varchar(20),
+fk_address_email_provider varchar (55),
+foreign key (fk_address_email_provider) references Provider (email_provider)
+);
+
+create table Grocer (
+email_grocer varchar (55) primary key,
+name_grocer varchar (40) not null,
+last_name_grocer varchar (40) not null,
+name_store varchar (50) not null,
+city_grocer varchar (40) not null,
+password_grocer varchar (100)
+);
+
+create table GrocerAddress (
+neighborhood varchar (40) not null,
+street varchar (30) not null,
+number_street char (5),
+fk_address_email_grocer varchar (55),
+foreign key (fk_address_email_grocer) references Grocer (email_grocer)
+);
+
+create table GrocerPhone (
+number_grocer varchar (15),
+fk_phone_email_grocer varchar (55),
+foreign key (fk_phone_email_grocer) references grocer (email_grocer)
+);
