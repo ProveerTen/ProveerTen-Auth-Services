@@ -1,7 +1,9 @@
+
 import express from 'express';
 import cors from 'cors';
 import register from './routes/register';
 import login from './routes/login';
+import resetPassword from './routes/reset-password';
 
 class Server {
 
@@ -32,6 +34,7 @@ class Server {
     routes() {
         this.app.use('/register', register);
         this.app.use('/login', login);
+        this.app.use('/reset',resetPassword)
     }
 }
 

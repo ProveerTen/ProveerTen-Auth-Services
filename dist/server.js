@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const register_1 = __importDefault(require("./routes/register"));
 const login_1 = __importDefault(require("./routes/login"));
+const reset_password_1 = __importDefault(require("./routes/reset-password"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -28,6 +29,7 @@ class Server {
     routes() {
         this.app.use('/register', register_1.default);
         this.app.use('/login', login_1.default);
+        this.app.use('/reset', reset_password_1.default);
     }
 }
 exports.default = Server;

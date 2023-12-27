@@ -38,6 +38,7 @@ export const provider = async (req: Request, res: Response) => {
             street,
             number_street
         };
+            
 
         registerProvider(data, (error: any, result: any) => {
             if (error) {
