@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.veriProvider = exports.verifyGrocer = void 0;
+exports.verifyProvider = exports.verifyGrocer = void 0;
 const db_config_1 = __importDefault(require("../config/db-config"));
 const verifyGrocer = (emailGrocer, callback) => {
     const grocerExisting = 'call getGrocerEmailExist(?,@message_text);';
@@ -20,7 +20,7 @@ const verifyGrocer = (emailGrocer, callback) => {
     }
 };
 exports.verifyGrocer = verifyGrocer;
-const veriProvider = (emailProvider, callback) => {
+const verifyProvider = (emailProvider, callback) => {
     const providerExisting = '';
 };
-exports.veriProvider = veriProvider;
+exports.verifyProvider = verifyProvider;

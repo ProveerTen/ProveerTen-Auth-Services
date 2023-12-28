@@ -1,6 +1,4 @@
-import { error } from "console";
 import connection from "../config/db-config";
-
 
 export const verifyGrocer = (emailGrocer: any, callback:any)=> {
 
@@ -20,7 +18,7 @@ export const verifyGrocer = (emailGrocer: any, callback:any)=> {
 
 }
 
-export const veriProvider = (emailProvider: any, callback:any)=> {
+export const verifyProvider = (emailProvider: any, callback:any)=> {
 
     const providerExisting = ''
 

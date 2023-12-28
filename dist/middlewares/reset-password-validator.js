@@ -9,7 +9,7 @@ let paramProviderEmailResetPassword = [
 ];
 function validatorParam(req, res, next) {
     const errors = (0, express_validator_1.validationResult)(req);
-    if (errors.isEmpty()) {
+    if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
     }
     next();
