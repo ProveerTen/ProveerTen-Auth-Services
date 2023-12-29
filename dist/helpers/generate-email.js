@@ -26,7 +26,7 @@ const generateEmail = (token, email, req, res) => __awaiter(void 0, void 0, void
                 from: 'alvaradojhna690@gmail.com',
                 to: email,
                 subject: 'Recuperación de contraseña',
-                text: token
+                text: `http://${req.headers.host}/reset/reset-password/${token}`
             };
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {

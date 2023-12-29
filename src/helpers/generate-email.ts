@@ -13,13 +13,12 @@ export const generateEmail = async (token: any, email: any, req: any, res: any) 
                     pass: passwordEmail 
                 }
             });
-
-            const mailOptions = {
-                from: 'alvaradojhna690@gmail.com',
-                to: email,
-                subject: 'Recuperación de contraseña',
-                text: token 
-            };
+const mailOptions = {
+    from: 'alvaradojhna690@gmail.com',
+    to: email,
+    subject: 'Recuperación de contraseña',
+    text: `http://${req.headers.host}/reset/reset-password/${token}`
+};
 
             transporter.sendMail(mailOptions, (error: any, info: any) => {
                 if (error) {

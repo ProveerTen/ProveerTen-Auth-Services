@@ -10,6 +10,9 @@ let paramCompanyEmailResetPassword:any = [
     check('email_company').isEmail()
 ];
 
+let paramPassword: any = [
+    check('password').isLength({ min: 1, max: 15 })
+]
 
 
 function validatorParam(req:Request, res:Response, next:NextFunction) {
@@ -24,6 +27,7 @@ function validatorParam(req:Request, res:Response, next:NextFunction) {
 export default{
     paramGrocerEmailResetPassword,
     paramCompanyEmailResetPassword,
+    paramPassword,
     validatorParam
 }
 

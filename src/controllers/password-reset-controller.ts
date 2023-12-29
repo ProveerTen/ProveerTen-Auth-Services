@@ -1,7 +1,9 @@
+import  jwt  from "jsonwebtoken";
 import { Request, Response } from "express";
 import {
   verifyCompany,
   verifyGrocer,
+  updatePassword
 } from "../services/reset-password-service";
 import generateToken from "../helpers/generate-token";
 import { generateEmail } from "../helpers/generate-email";
@@ -60,6 +62,47 @@ export const resetPasswordCompany = async (req: Request, res: Response) => {
 };
 
 
-export const updatePassword = async ()=>{
+export const resetPassword = async (req: Request, res: Response) => {
+    const token = req.params.t;
+    let secret_key: any = process.env.SECRET_KEY;
 
-}
+    try {
+        const decoded = jwt.verify(token, secret_key);
+        const exp: any = decoded;
+        const expirationDate = new Date(exp * 1000);
+
+        if (expirationDate < new Date()) {
+            console.log("Token expirado");
+            console.log("1");
+            return res.status(400).json({ message: "El token ha expirado" });
+            
+        } else {
+            let { email }: any = decoded;
+            let { role }: any = decoded;
+            let password = req.body.password;
+
+            updatePassword(email, role, password, (error: any, result: any) => {
+                if (error) {
+                    console.log("2");
+                    
+                    return res.status(500).json({ error: error.message });
+                }
+                else{
+
+                    console.log("3");
+                    return res.status(200).json({ message: result });
+                }
+                
+            });
+
+        }
+    } catch (err) {
+        console.log("4");
+        
+        return res.status(500).json({
+            error: err,
+            message: `Error al actualizar la contraseña`,
+        });
+
+    }
+};

@@ -4,6 +4,7 @@ import cors from 'cors';
 import register from './routes/register';
 import login from './routes/login';
 import resetPassword from './routes/reset-password';
+import bodyParser from 'body-parser';
 
 class Server {
 
@@ -25,7 +26,8 @@ class Server {
 
     middlewares() {
         // Parseo body
-        this.app.use(express.json());
+        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(bodyParser.json());
 
         // Cors
         this.app.use(cors({ credentials: true, origin: 'http://localhost:4200' }));

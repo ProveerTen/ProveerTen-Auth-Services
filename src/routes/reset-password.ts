@@ -1,12 +1,10 @@
 import { Router } from "express";
 import validator from '../middlewares/reset-password-validator'
-import {resetPasswordGrocer, resetPasswordCompany} from '../controllers/password-reset-controller';
+import {resetPasswordGrocer, resetPasswordCompany, resetPassword} from '../controllers/password-reset-controller';
 const router = Router();
 
 router.post ('/company-reset-password', validator.paramCompanyEmailResetPassword, validator.validatorParam, resetPasswordCompany);
 router.post ('/grocer-reset-password', validator.paramGrocerEmailResetPassword, validator.validatorParam, resetPasswordGrocer);
-
-
-router.post ('password-reset');
+router.post ('/reset-password/:t', resetPassword); //validator.paramPassword,validator.validatorParam,
 
 export default router;
