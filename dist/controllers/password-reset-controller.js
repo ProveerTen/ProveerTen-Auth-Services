@@ -12,22 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = void 0;
+exports.updatePassword = exports.resetPasswordCompany = exports.resetPasswordGrocer = void 0;
 const reset_password_service_1 = require("../services/reset-password-service");
 const generate_token_1 = __importDefault(require("../helpers/generate-token"));
 const generate_email_1 = require("../helpers/generate-email");
 require("dotenv/config");
-const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const resetPasswordGrocer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const email = req.body.email_grocer;
-        (0, reset_password_service_1.verifyGrocer)(email, (error, result) => {
+        const emailGrocer = req.body.email_grocer;
+        (0, reset_password_service_1.verifyGrocer)(emailGrocer, (error, result) => {
             if (error) {
                 res.status(500).json({ error: error.message });
             }
             if (result) {
                 let secret_key = process.env.SECRET_KEY;
-                let token = (0, generate_token_1.default)({ email: email }, secret_key, new Date().getTime() + 2 * 60 * 1000);
-                (0, generate_email_1.generateEmail)(token, email, req, res);
+                let token = (0, generate_token_1.default)({ role: "grocer", email: emailGrocer }, secret_key, new Date().getTime() + 2 * 60 * 1000);
+                (0, generate_email_1.generateEmail)(token, emailGrocer, req, res);
             }
         });
     }
@@ -35,8 +35,28 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         console.error(error);
         res.status(500).json({
             error: error,
-            message: `error controlador`
+            message: `error reset password`,
         });
     }
 });
-exports.resetPassword = resetPassword;
+exports.resetPasswordGrocer = resetPasswordGrocer;
+const resetPasswordCompany = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const emailCompany = req.body.email_company;
+        (0, reset_password_service_1.verifyCompany)(emailCompany, (error, result) => {
+            if (error) {
+                res.status(500).json({ error: error.message });
+            }
+            if (result) {
+                let secret_key = process.env.SECRET_KEY;
+                let token = (0, generate_token_1.default)({ role: "company", email: emailCompany }, secret_key, new Date().getTime() + 2 * 60 * 1000);
+                (0, generate_email_1.generateEmail)(token, emailCompany, req, res);
+            }
+        });
+    }
+    catch (error) { }
+});
+exports.resetPasswordCompany = resetPasswordCompany;
+const updatePassword = () => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.updatePassword = updatePassword;

@@ -1,3 +1,4 @@
+import { error } from "console";
 import connection from "../config/db-config";
 
 export const verifyGrocer = (emailGrocer: any, callback:any)=> {
@@ -18,9 +19,21 @@ export const verifyGrocer = (emailGrocer: any, callback:any)=> {
 
 }
 
-export const verifyProvider = (emailProvider: any, callback:any)=> {
+export const verifyCompany = (emailProvider: any, callback:any)=> {
 
-    const providerExisting = ''
+    const providerExisting = 'call getCompany_EmailExist (?,@message_text);';
+    try{
+        connection.query (providerExisting, emailProvider, (error:any, result:any)=>{
 
+            if (error){
+                return callback (error)
+            }
+            callback(null, result);
+        })
+
+    }
+    catch (error){
+        return callback (error)
+    }
 
 }

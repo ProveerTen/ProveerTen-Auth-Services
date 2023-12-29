@@ -1,34 +1,65 @@
 import { Request, Response } from "express";
-import { verifyGrocer } from "../services/reset-password-service";
+import {
+  verifyCompany,
+  verifyGrocer,
+} from "../services/reset-password-service";
 import generateToken from "../helpers/generate-token";
 import { generateEmail } from "../helpers/generate-email";
-import 'dotenv/config';
+import "dotenv/config";
 
-export const resetPassword = async (req: Request, res: Response) => {
+export const resetPasswordGrocer = async (req: Request, res: Response) => {
   try {
-    const email = req.body.email_grocer;
+    const emailGrocer = req.body.email_grocer;
 
-    verifyGrocer(email, (error: any, result: any) => {
+    verifyGrocer(emailGrocer, (error: any, result: any) => {
       if (error) {
         res.status(500).json({ error: error.message });
       }
 
       if (result) {
-        let secret_key: any = process.env.SECRET_KEY
+        let secret_key: any = process.env.SECRET_KEY;
         let token: any = generateToken(
-          { email: email },
+          { role: "grocer", email: emailGrocer },
           secret_key,
           new Date().getTime() + 2 * 60 * 1000
         );
 
-        generateEmail(token, email, req, res);
+        generateEmail(token, emailGrocer, req, res);
       }
     });
   } catch (error) {
     console.error(error);
-        res.status(500).json({
-            error: error,
-            message: `error controlador`
-        });
+    res.status(500).json({
+      error: error,
+      message: `error reset password`,
+    });
   }
 };
+
+export const resetPasswordCompany = async (req: Request, res: Response) => {
+  try {
+    const emailCompany = req.body.email_company;
+
+    verifyCompany(emailCompany, (error: any, result: any) => {
+      if (error) {
+        res.status(500).json({ error: error.message });
+      }
+
+      if (result) {
+        let secret_key: any = process.env.SECRET_KEY;
+        let token: any = generateToken(
+          { role: "company", email: emailCompany },
+          secret_key,
+          new Date().getTime() + 2 * 60 * 1000
+        );
+
+        generateEmail(token, emailCompany, req, res);
+      }
+    });
+  } catch (error) {}
+};
+
+
+export const updatePassword = async ()=>{
+
+}

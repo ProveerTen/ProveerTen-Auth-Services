@@ -6,8 +6,8 @@ let paramGrocerEmailResetPassword:any = [
     check('email_grocer').isEmail()
 ];
 
-let paramProviderEmailResetPassword:any = [
-    check('email_provider').isEmail()
+let paramCompanyEmailResetPassword:any = [
+    check('email_company').isEmail()
 ];
 
 
@@ -23,7 +23,7 @@ function validatorParam(req:Request, res:Response, next:NextFunction) {
 
 export default{
     paramGrocerEmailResetPassword,
-    paramProviderEmailResetPassword,
+    paramCompanyEmailResetPassword,
     validatorParam
 }
 
