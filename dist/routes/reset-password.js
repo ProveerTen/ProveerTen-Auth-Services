@@ -9,5 +9,5 @@ const password_reset_controller_1 = require("../controllers/password-reset-contr
 const router = (0, express_1.Router)();
 router.post('/company-reset-password', reset_password_validator_1.default.paramCompanyEmailResetPassword, reset_password_validator_1.default.validatorParam, password_reset_controller_1.resetPasswordCompany);
 router.post('/grocer-reset-password', reset_password_validator_1.default.paramGrocerEmailResetPassword, reset_password_validator_1.default.validatorParam, password_reset_controller_1.resetPasswordGrocer);
-router.post('/reset-password/:t', password_reset_controller_1.resetPassword); //validator.paramPassword,validator.validatorParam,
+router.post('/reset-password/:t', reset_password_validator_1.default.paramPassword, reset_password_validator_1.default.validatorParam, password_reset_controller_1.resetPassword);
 exports.default = router;

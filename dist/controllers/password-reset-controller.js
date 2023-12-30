@@ -84,7 +84,6 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
     catch (err) {
-        console.log("4");
         return res.status(500).json({
             error: err,
             message: `Error al actualizar la contraseña`,

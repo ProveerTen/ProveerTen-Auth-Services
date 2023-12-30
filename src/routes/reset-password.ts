@@ -5,6 +5,6 @@ const router = Router();
 
 router.post ('/company-reset-password', validator.paramCompanyEmailResetPassword, validator.validatorParam, resetPasswordCompany);
 router.post ('/grocer-reset-password', validator.paramGrocerEmailResetPassword, validator.validatorParam, resetPasswordGrocer);
-router.post ('/reset-password/:t', resetPassword); //validator.paramPassword,validator.validatorParam,
+router.post ('/reset-password/:t',validator.paramPassword,validator.validatorParam, resetPassword); 
 
 export default router;

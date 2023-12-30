@@ -90,8 +90,6 @@ export const resetPassword = async (req: Request, res: Response) => {
             });
         }
     } catch (err) {
-        console.log("4");
-        
         return res.status(500).json({
             error: err,
             message: `Error al actualizar la contraseña`,
