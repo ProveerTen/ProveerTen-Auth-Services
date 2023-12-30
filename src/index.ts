@@ -1,4 +1,4 @@
-import Server from "./server";
+/*import Server from "./server";
 import dotenv from 'dotenv';
 import connection from './config/db-config';
 
@@ -13,3 +13,4 @@ server.listen();
 // Conectamos la db
 connection;
 
+*/

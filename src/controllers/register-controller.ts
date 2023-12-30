@@ -1,106 +1,48 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import bcrypt from 'bcrypt';
-import Provider from '../models/Provider';
-import Grocer from '../models/Grocer';
-import { registerGrocer } from '../services/grocer-service';
-import { registerProvider } from '../services/provider-service';
+import connection from '../config/db-config';
+import { generateEmail } from '../helpers/generate-email';
+import { sendEmail } from '../services/email-service';
+import User from '../models/user-model';
 
-export const provider = async (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response) => {
     try {
         const {
-            nit_provider,
-            email_provider,
-            name_provider,
-            last_name_provider,
-            name_company,
-            city_provider,
-            password_provider,
-            description_provider,
-            number_provider,
-            neighborhood,
-            street,
-            number_street
-        } = req.body;
+            email,
+            password,
+            userType
+        } = req.body
 
-        const password_hash = await bcrypt.hash(password_provider, 10);
+        //validacion del registro
+        if(!email || !password || !userType) {
+            return res.status(400).json({error: 'Todos los campos son obligatorios.'});
+        }
+        //hash de la contraseña
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        const data: Provider = {
-            nit_provider,
-            email_provider,
-            name_provider,
-            last_name_provider,
-            name_company,
-            city_provider,
-            password_provider: password_hash,
-            description_provider,
-            number_provider,
-            neighborhood,
-            street,
-            number_street
-        };
-            
-
-        registerProvider(data, (error: any, result: any) => {
-            if (error) {
-                res.status(500).json({ "error": error.message });
-            } else {
-                res.status(200).json({ "Status": result[0][0].message_text});
+        //registro para la base de datos
+        const procInsertUserQuery ='call insertUser (?,?,?,@message_text);';
+        connection.query(procInsertUserQuery, [email, hashedPassword, userType], async (error:any, results: any) =>{
+            if(error){
+                return res.status(500).json({error: 'Error interno del servidor.'});
             }
+
+                //mensaje del procedimiento almacenado
+            const message = results[0][0].message_text;
+
+            //si el registro es exitoso se enviara el correo
+            if(message==='usuario registrado exitosamente'){
+                await sendEmail(email, 'Bienvenido a la plataforma', generateEmail(email));
+            }
+
+            res.status(200).json({message});
         });
 
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            error: error,
-            message: `error registering provider`
-        });
+    } catch(error){
+        console.error('Error al registrar usuario:', error);
+        res.status(500).json({error: 'Error interno del servidor.'});
     }
+
 };
 
-export const grocer = async (req: Request, res: Response) => {
-    try {
-        const {
-            email_grocer,
-            name_grocer,
-            last_name_grocer,
-            name_store,
-            city_grocer,
-            password_grocer,
-            neighborhood,
-            street,
-            number_street,
-            number_grocer,
-            apartment
-        } = req.body;
 
-        const password_hash = await bcrypt.hash(password_grocer, 10);
-
-        const data: Grocer = {
-            email_grocer,
-            name_grocer,
-            last_name_grocer,
-            name_store,
-            city_grocer,
-            password_grocer: password_hash,
-            neighborhood,
-            street,
-            number_street,
-            number_grocer,
-            apartment
-        };
-
-        registerGrocer(data, (error: any, result: any) => {
-            if (error) {
-                res.status(500).json({ "error": error.message });
-            } else {
-                res.status(200).json({ "Status": result[0][0].message_text});
-            }
-        })
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            error: error,
-            message: `error registering grocer`
-        });
-    }
-}

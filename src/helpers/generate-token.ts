@@ -13,4 +13,6 @@ let generateToken = (
     return token;
 }
 
+
+
 export default generateToken;

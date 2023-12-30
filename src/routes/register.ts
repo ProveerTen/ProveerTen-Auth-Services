@@ -1,10 +1,9 @@
-import { Router } from 'express';
-import { provider, grocer } from '../controllers/register-controller'
-import validator from '../middlewares/register-validator'
+import express from 'express';
+import { sendWelcomeEmail } from "../controllers/welcome-controller";
+import { registerUser } from '../controllers/register-controller';
 
-const router = Router();
+const router = express.Router();
 
-router.post('/provider', validator.paramsProvider, validator.validatorParams, provider);
-router.post('/grocer', validator.paramsGrocer, validator.validatorParams, grocer);
+router.post('/register', registerUser, sendWelcomeEmail);
 
 export default router;

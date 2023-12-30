@@ -1,50 +1,58 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePassword = exports.verifyCompany = exports.verifyGrocer = void 0;
-const db_config_1 = __importDefault(require("../config/db-config"));
-const verifyGrocer = (emailGrocer, callback) => {
-    const grocerExisting = 'call getGrocerEmailExist(?,@message_text);';
-    try {
-        db_config_1.default.query(grocerExisting, emailGrocer, (error, results) => {
-            if (error) {
-                return callback(error);
-            }
-            callback(null, results);
-        });
+/*import { error, log } from "console";
+import connection from "../config/db-config";
+
+export const verifyGrocer = (emailGrocer: any, callback:any)=> {
+
+        const grocerExisting = 'call getGrocerEmailExist(?,@message_text);';
+    try{
+
+            connection.query(grocerExisting, emailGrocer, (error:any ,results:any) => {
+                if (error){
+                    return callback (error);
+                }
+                callback (null, results);
+            })
     }
-    catch (error) {
+    catch (error){
         return callback(error);
     }
-};
-exports.verifyGrocer = verifyGrocer;
-const verifyCompany = (emailProvider, callback) => {
+
+}
+
+export const verifyCompany = (emailProvider: any, callback:any)=> {
+
     const providerExisting = 'call getCompany_EmailExist (?,@message_text);';
-    try {
-        db_config_1.default.query(providerExisting, emailProvider, (error, result) => {
-            if (error) {
-                return callback(error);
+    try{
+        connection.query (providerExisting, emailProvider, (error:any, result:any)=>{
+
+            if (error){
+                return callback (error)
             }
             callback(null, result);
-        });
+        })
+
     }
-    catch (error) {
-        return callback(error);
+    catch (error){
+        return callback (error)
     }
-};
-exports.verifyCompany = verifyCompany;
-const updatePassword = (email, role, password, callback) => {
-    let result;
-    console.log(role);
-    if (role == "grocer") {
-        result = "LLego Grocer y se actualizo";
-        callback(null, result);
+
+}
+
+
+export const updatePassword  = (email:any, role:any, password:any, callback:any)=>{
+
+        let result :string;
+        console.log (role)
+    if (role == "grocer"){
+        result ="LLego Grocer y se actualizo"
+        callback (null, result );
+        
+    }else {
+        result ="LLego Company y se actualizo"
+        callback (null, result);
     }
-    else {
-        result = "LLego Company y se actualizo";
-        callback(null, result);
-    }
-};
-exports.updatePassword = updatePassword;
+
+    
+
+}*/ 
