@@ -11,19 +11,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateEmail = void 0;
 const nodemailer = require('nodemailer');
-const passwordEmail = 'yeoq llta hxkw lduu';
 const generateEmail = (token, email, req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (email) {
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: 'alvaradojhan690@gmail.com',
-                    pass: passwordEmail
+                    user: process.env.EMAIL,
+                    pass: process.env.KEY_EMAIL
                 }
             });
             const mailOptions = {
-                from: 'alvaradojhna690@gmail.com',
+                from: process.env.EMAIL,
                 to: email,
                 subject: 'Recuperación de contraseña',
                 text: `http://${req.headers.host}/reset/reset-password/${token}`

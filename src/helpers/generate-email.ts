@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 const nodemailer = require('nodemailer');
-const passwordEmail = 'yeoq llta hxkw lduu';
+import { config } from 'dotenv';
 
 
 export const generateEmail = async (token: any, email: any, req: any, res: any) => {
@@ -9,12 +9,13 @@ export const generateEmail = async (token: any, email: any, req: any, res: any) 
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: 'alvaradojhan690@gmail.com',
-                    pass: passwordEmail 
+                    user: process.env.EMAIL,
+                    pass:process.env.KEY_EMAIL
                 }
             });
 const mailOptions = {
-    from: 'alvaradojhna690@gmail.com',
+    
+    from: process.env.EMAIL,
     to: email,
     subject: 'Recuperación de contraseña',
     text: `http://${req.headers.host}/reset/reset-password/${token}`

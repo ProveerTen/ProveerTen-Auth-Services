@@ -67,7 +67,6 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const expirationDate = new Date(exp * 1000);
         if (expirationDate < new Date()) {
             console.log("Token expirado");
-            console.log("1");
             return res.status(400).json({ message: "El token ha expirado" });
         }
         else {
@@ -76,11 +75,9 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             let password = req.body.password;
             (0, reset_password_service_1.updatePassword)(email, role, password, (error, result) => {
                 if (error) {
-                    console.log("2");
                     return res.status(500).json({ error: error.message });
                 }
                 else {
-                    console.log("3");
                     return res.status(200).json({ message: result });
                 }
             });

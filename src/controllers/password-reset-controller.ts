@@ -72,8 +72,7 @@ export const resetPassword = async (req: Request, res: Response) => {
         const expirationDate = new Date(exp * 1000);
 
         if (expirationDate < new Date()) {
-            console.log("Token expirado");
-            console.log("1");
+            console.log("Token expirado");    
             return res.status(400).json({ message: "El token ha expirado" });
             
         } else {
@@ -83,18 +82,12 @@ export const resetPassword = async (req: Request, res: Response) => {
 
             updatePassword(email, role, password, (error: any, result: any) => {
                 if (error) {
-                    console.log("2");
-                    
                     return res.status(500).json({ error: error.message });
                 }
                 else{
-
-                    console.log("3");
                     return res.status(200).json({ message: result });
-                }
-                
+                } 
             });
-
         }
     } catch (err) {
         console.log("4");
