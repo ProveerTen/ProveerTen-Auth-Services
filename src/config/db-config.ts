@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 // Configuramos dotenv 
 dotenv.config();
 
+
+
 const connection = mysql.createConnection({
     host: process.env.HOST,
     user: process.env.USER,

@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+
 const login_1 = __importDefault(require("./routes/login"));
+const register_1 = __importDefault(require("./routes/register"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -20,12 +22,14 @@ class Server {
     }
     middlewares() {
         // Body Parser
+        // Parseo body
         this.app.use(express_1.default.json());
         // Cors
         this.app.use((0, cors_1.default)({ credentials: true, origin: 'http://localhost:4200' }));
     }
     routes() {
         this.app.use('/login', login_1.default);
+        this.app.use('/register', register_1.default);
     }
 }
 exports.default = Server;
