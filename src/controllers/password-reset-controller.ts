@@ -6,7 +6,7 @@ import {
   updatePassword
 } from "../services/reset-password-service";
 import generateToken from "../helpers/generate-token";
-import { generateEmail } from "../helpers/generate-email";
+import { generateEmail, emailConfirmation } from "../helpers/generate-email";
 import "dotenv/config";
 
 export const resetPasswordGrocer = async (req: Request, res: Response) => {
@@ -85,6 +85,7 @@ export const resetPassword = async (req: Request, res: Response) => {
                     return res.status(500).json({ error: error.message });
                 }
                 else{
+                    emailConfirmation (email,req,res);
                     return res.status(200).json({ message: result });
                 } 
             });
