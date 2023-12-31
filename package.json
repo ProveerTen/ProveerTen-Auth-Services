@@ -1,12 +1,21 @@
 {
+
   "name": "auth-service",
+
+  "name": "feature-login",
+  "name": "aurh-service",
+
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+
     "dev": "nodemon dist/index.js",
     "generate_key": "node src/genarate_key/generate_key.ts"
+
+    "dev": "nodemon dist/index.js"
+
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +31,13 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.3",
     "nodemailer": "^6.9.7",
+
+    "mysql2": "^3.6.5"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "mysql2": "^3.6.3",
     "secure-random": "^1.1.2"
   },
   "devDependencies": {

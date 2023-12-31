@@ -1,8 +1,12 @@
 # Node
 /node_modules
 
-# dist
-/dist
-
 # dotenv
 .env
+
+# dotenv
+
+
+#dist
+/dist
+
