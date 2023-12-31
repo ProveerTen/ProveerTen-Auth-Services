@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import login from './routes/login';
 import register from './routes/register';
 
 class Server {
@@ -21,7 +22,9 @@ class Server {
     }
 
     middlewares() {
+        // Body Parser
         // Parseo body
+
         this.app.use(express.json());
 
         // Cors
@@ -29,7 +32,10 @@ class Server {
     }
 
     routes() {
+        this.app.use('/login', login);
+
         this.app.use('/register', register);
+
     }
 }
 
