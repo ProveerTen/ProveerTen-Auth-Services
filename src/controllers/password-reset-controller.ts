@@ -86,6 +86,8 @@ export const resetPassword = async (req: Request, res: Response) => {
                 }
                 else{
                     emailConfirmation (email,req,res);
+                    console.log("Correo enviado exitodamente");
+                    
                     return res.status(200).json({ message: result });
                 } 
             });

@@ -79,6 +79,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 }
                 else {
                     (0, generate_email_1.emailConfirmation)(email, req, res);
+                    console.log("Correo enviado exitodamente");
                     return res.status(200).json({ message: result });
                 }
             });
