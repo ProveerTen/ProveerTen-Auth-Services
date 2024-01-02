@@ -407,9 +407,6 @@ delimiter ;
 
 call insertProvider ('24851785','Juan Felipe','Pérez Holmo','perezholmo@gmail.com','time1234',null,'10122012334-5','2','Bogotá', 'Chapinero', 'Calle 70', '10-25',
 '123456789',@message_text);
-call getprovider;
-
-
 
 delimiter //
 
@@ -424,7 +421,8 @@ in name_store varchar (50),
 in profile_photo_grocer varchar (100),
 in cover_photo_grocer varchar (100),
 in city_grocer varchar (40),
-in password_grocer varchar (100),	
+in password_grocer varchar (100),
+in rol varchar (5),	
 in neighborhood varchar (40),
 in street varchar (30),
 in number_street varchar (25),
@@ -448,7 +446,8 @@ email_grocer,
 name_store,
 profile_photo_grocer,
 cover_photo_grocer,
-password_grocer
+password_grocer,
+fk_id_rol
         ) values (
 document_grocer,
 name_grocer,
@@ -457,7 +456,8 @@ email_grocer,
 name_store,
 profile_photo_grocer,
 cover_photo_grocer,
-password_grocer
+password_grocer,
+rol
 		);
         insert into locationGrocer (
         fk_document_locationGrocer,
@@ -490,7 +490,7 @@ end //
 
 delimiter ;
 
-call insertGrocer('1234567890', 'Laura Valentina', 'Pérez Gómez', 'lauravalentina@yahoo.com', 'Super Tienda',null,null, 'Bogotá', 'contrasena123','Centro', 'Carrera 10', '123', 'Apto 301','3114756954',@message_text);
+call insertGrocer('1234567890', 'Laura Valentina', 'Pérez Gómez', 'lauravalentina@yahoo.com', 'Super Tienda',null,null, 'Bogotá', 'contrasena123','3','Centro', 'Carrera 10', '123', 'Apto 301','3114756954',@message_text);
 
 
 -- Procedimiento para traerse la data de la compania
@@ -505,7 +505,7 @@ begin
        set error_message = 'error, company user does not exist';
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
 	else
-		select nit_company, email_company, password_company from company where email_company = _email_company;
+		select nit_company, email_company, password_company, fk_id_rol from company where email_company = _email_company;
     end if;
 end **
 
@@ -525,7 +525,7 @@ begin
        set error_message = 'error, provider user does not exist';
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
 	else
-		select document_provider, email_provider, password_provider from provider where email_provider = _email_provider;
+		select document_provider, email_provider, password_provider, fk_id_rol from provider where email_provider = _email_provider;
     end if;
 end //
 
@@ -545,12 +545,11 @@ begin
        set error_message = 'error, grocer user does not exist';
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
 	else
-		select document_grocer, email_grocer, password_grocer from grocer where email_grocer = _email_grocer;
+		select document_grocer, email_grocer, password_grocer, fk_id_rol from grocer where email_grocer = _email_grocer;
     end if;
 end <<
 
 call get_data_grocer('lauravalentina@yahoo.com');
-
 
 
 -- sp para traer la data del perfil de la compania
@@ -657,8 +656,6 @@ delimiter ;
 call getCompanyEmailExist('colgate@gmail.com', @message_text);
 
 
-
-
 delimiter //
 
 create procedure updatePasswordCompany (
@@ -688,8 +685,6 @@ delimiter ;
 call updatePasswordCompany ('colgate@gmail.com', '1',@message_text);
 
 delimiter //
-
-
 
 create procedure updatePasswordGrocer (
     in email_grocer varchar(55),

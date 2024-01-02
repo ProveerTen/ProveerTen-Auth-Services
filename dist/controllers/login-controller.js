@@ -22,14 +22,14 @@ const company = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             email_company,
             password_company
         };
-        login_1.default.loginCompany(data, (error, verifiedPassword, id_company) => {
+        login_1.default.loginCompany(data, (error, verifiedPassword, id_company, _role) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             }
             else {
                 if (verifiedPassword) {
                     let secretKey = process.env.SECRET_KEY;
-                    let token = (0, generate_token_1.default)({ role: "company", email: email_company, id: id_company }, secretKey, new Date().getTime() + (2 * 60 * 1000));
+                    let token = (0, generate_token_1.default)({ role: _role, email: email_company, id: id_company }, secretKey, new Date().getTime() + (2 * 60 * 1000));
                     return res.status(200).json({ status: 'Successful authentication', token: token });
                 }
                 else {
@@ -53,14 +53,14 @@ const provider = (req, res) => {
             email_provider,
             password_provider
         };
-        login_1.default.loginProvider(data, (error, verifiedPassword, id_provider) => {
+        login_1.default.loginProvider(data, (error, verifiedPassword, id_provider, _role) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             }
             else {
                 if (verifiedPassword) {
                     let secretKey = process.env.SECRET_KEY;
-                    let token = (0, generate_token_1.default)({ role: "provider", email: email_provider, id: id_provider }, secretKey, new Date().getTime() + (2 * 60 * 1000));
+                    let token = (0, generate_token_1.default)({ role: _role, email: email_provider, id: id_provider }, secretKey, new Date().getTime() + (2 * 60 * 1000));
                     return res.status(200).json({ status: 'Successful authentication', token: token });
                 }
                 else {
@@ -84,14 +84,14 @@ const grocer = (req, res) => {
             email_grocer,
             password_grocer
         };
-        login_1.default.loginGrocer(data, (error, verifiedPassword, id_grocer) => {
+        login_1.default.loginGrocer(data, (error, verifiedPassword, id_grocer, _role) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             }
             else {
                 if (verifiedPassword) {
                     let secretKey = process.env.SECRET_KEY;
-                    let token = (0, generate_token_1.default)({ role: "grocer", email: email_grocer, id: id_grocer }, secretKey, new Date().getTime() + (2 * 60 * 1000));
+                    let token = (0, generate_token_1.default)({ role: _role, email: email_grocer, id: id_grocer }, secretKey, new Date().getTime() + (2 * 60 * 1000));
                     return res.status(200).json({ status: 'Successful authentication', token: token });
                 }
                 else {
