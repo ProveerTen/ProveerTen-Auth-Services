@@ -1,45 +1,45 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
+
 import Provider from '../models/Provider';
 import Grocer from '../models/Grocer';
 import Company from '../models/Company';
-import { registerGrocer } from '../services/grocer-service';
-import { registerProvider } from '../services/provider-service';
-import { registerCompany } from '../services/company-service';
+
+import register from '../services/register';
 
 export const company = async (req: Request, res: Response) => {
-    
+
     try {
         const {
             nit_company,
-	        name_company,
-	        email_company,
-	        password_company,
-	        national_line_company,
-	        profile_photo_company,
-	        cover_photo_company,
-	        foundation_company,
-	        description_company
+            name_company,
+            email_company,
+            password_company,
+            national_line_company,
+            profile_photo_company,
+            cover_photo_company,
+            foundation_company,
+            description_company
         } = req.body;
 
         const password_hash = await bcrypt.hash(password_company, 10);
-        
+
         const data: Company = {
             nit_company,
-	        name_company,
-	        email_company,
-	        password_company:password_hash,
-	        national_line_company,
-	        profile_photo_company,
-	        cover_photo_company,
-	        foundation_company,
-	        description_company
+            name_company,
+            email_company,
+            password_company: password_hash,
+            national_line_company,
+            profile_photo_company,
+            cover_photo_company,
+            foundation_company,
+            description_company
         };
-        registerCompany(data, (error: any, result: any) => {
+        register.registerCompany(data, (error: any, result: any) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
-                res.status(200).json({ "Status": result[0][0].message_text});
+                res.status(200).json({ "Status": result[0][0].message_text });
             }
         })
     } catch (error) {
@@ -58,7 +58,7 @@ export const provider = async (req: Request, res: Response) => {
             document_provider,
             name_provider,
             last_name_provider,
-            email_provider, 
+            email_provider,
             password_provider,
             profile_photo_provider,
             nit_company,
@@ -66,7 +66,7 @@ export const provider = async (req: Request, res: Response) => {
             neighborhood,
             street,
             number_street,
-            number_provider 
+            number_provider
         } = req.body;
 
         const password_hash = await bcrypt.hash(password_provider, 10);
@@ -76,22 +76,22 @@ export const provider = async (req: Request, res: Response) => {
             document_provider,
             name_provider,
             last_name_provider,
-            email_provider, 
-            password_provider:password_hash,
+            email_provider,
+            password_provider: password_hash,
             profile_photo_provider,
             nit_company,
             city_provider,
             neighborhood,
             street,
             number_street,
-            number_provider 
+            number_provider
         };
-        
-        registerProvider(data, (error: any, result: any) => {
+
+        register.registerProvider(data, (error: any, result: any) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
-                res.status(200).json({ "Status": result[0][0].message_text});
+                res.status(200).json({ "Status": result[0][0].message_text });
             }
         });
 
@@ -134,7 +134,7 @@ export const grocer = async (req: Request, res: Response) => {
             profile_photo_grocer,
             cover_photo_grocer,
             city_grocer,
-            password_grocer:password_hash,
+            password_grocer: password_hash,
             neighborhood,
             street,
             number_street,
@@ -142,11 +142,11 @@ export const grocer = async (req: Request, res: Response) => {
             number_grocer
         };
 
-        registerGrocer(data, (error: any, result: any) => {
+        register.registerGrocer(data, (error: any, result: any) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
-                res.status(200).json({ "Status": result[0][0].message_text});
+                res.status(200).json({ "Status": result[0][0].message_text });
             }
         })
     } catch (error) {

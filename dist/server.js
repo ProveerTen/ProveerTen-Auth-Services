@@ -5,8 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+
 const reset_password_1 = __importDefault(require("./routes/reset-password"));
 const body_parser_1 = __importDefault(require("body-parser"));
+
 const login_1 = __importDefault(require("./routes/login"));
 const register_1 = __importDefault(require("./routes/register"));
 class Server {
