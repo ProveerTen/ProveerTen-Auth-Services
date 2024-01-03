@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const db_config_1 = __importDefault(require("../config/db-config"));
 const compare_password_1 = __importDefault(require("../helpers/compare-password"));
 const loginCompany = (data, callback) => {
-    const getCompanyQuery = 'call  get_data_profile_company(?);';
+    const getCompanyQuery = 'call get_data_company(?);';
     try {
         db_config_1.default.query(getCompanyQuery, [data.email_company], (error, results) => {
             if (error) {
@@ -14,8 +14,9 @@ const loginCompany = (data, callback) => {
             }
             let idCompany = results[0][0].nit_company;
             let storedPassword = results[0][0].password_company;
+            let role = results[0][0].fk_id_rol;
             let verifiedPassword = (0, compare_password_1.default)(data.password_company, storedPassword);
-            callback(null, verifiedPassword, idCompany);
+            callback(null, verifiedPassword, idCompany, role);
         });
     }
     catch (error) {
@@ -31,8 +32,9 @@ const loginProvider = (data, callback) => {
             }
             let idProvider = results[0][0].document_provider;
             let storedPassword = results[0][0].password_provider;
+            let role = results[0][0].fk_id_rol;
             let verifiedPassword = (0, compare_password_1.default)(data.password_provider, storedPassword);
-            callback(null, verifiedPassword, idProvider);
+            callback(null, verifiedPassword, idProvider, role);
         });
     }
     catch (error) {
@@ -48,8 +50,9 @@ const loginGrocer = (data, callback) => {
             }
             let idGrocer = results[0][0].document_grocer;
             let storedPassword = results[0][0].password_grocer;
+            let role = results[0][0].fk_id_rol;
             let verifiedPassword = (0, compare_password_1.default)(data.password_grocer, storedPassword);
-            callback(null, verifiedPassword, idGrocer);
+            callback(null, verifiedPassword, idGrocer, role);
         });
     }
     catch (error) {

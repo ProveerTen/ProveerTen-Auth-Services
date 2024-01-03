@@ -1,7 +1,6 @@
 import { check, validationResult } from 'express-validator';
 import { NextFunction, Request, Response } from 'express';
 
-
 let paramsCompany: any = [
     check('nit_company').isLength({ min: 9, max: 15 }),
     check('email_company').isEmail(),
@@ -36,7 +35,7 @@ let paramsGrocer: any = [
     check('name_store').isLength({ min: 1, max: 50 }),
     check('city_grocer').isLength({ min: 1, max: 25 }),
     check('password_grocer').isLength({ min: 8, max: 40 }),
-    check('neighborhood').isLength({ min: 4, max: 40 }),    
+    check('neighborhood').isLength({ min: 4, max: 40 }),
     check('street').isLength({ min: 1, max: 30 }),
     check('number_street').isLength({ min: 1, max: 25 }),
     check('apartment').isLength({ min: 1, max: 25 }),

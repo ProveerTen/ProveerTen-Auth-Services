@@ -11,14 +11,14 @@ export const company = async (req: Request, res: Response) => {
             password_company
         }
 
-        login.loginCompany(data, (error: any, verifiedPassword: any, id_company: string) => {
+        login.loginCompany(data, (error: any, verifiedPassword: any, id_company: string, _role: string) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
                 if (verifiedPassword) {
                     let secretKey: any = process.env.SECRET_KEY;
                     let token: any = generateToken(
-                        { role: "company", email: email_company, id: id_company },
+                        { role: _role, email: email_company, id: id_company },
                         secretKey, new Date().getTime() + (2 * 60 * 1000)
                     )
                     return res.status(200).json({ status: 'Successful authentication', token: token });
@@ -45,14 +45,14 @@ export const provider = (req: Request, res: Response) => {
             password_provider
         }
 
-        login.loginProvider(data, (error: any, verifiedPassword: any, id_provider: string) => {
+        login.loginProvider(data, (error: any, verifiedPassword: any, id_provider: string, _role: string) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
                 if (verifiedPassword) {
                     let secretKey: any = process.env.SECRET_KEY;
                     let token: any = generateToken(
-                        { role: "provider", email: email_provider, id: id_provider },
+                        { role: _role, email: email_provider, id: id_provider },
                         secretKey, new Date().getTime() + (2 * 60 * 1000)
                     )
                     return res.status(200).json({ status: 'Successful authentication', token: token });
@@ -78,14 +78,14 @@ export const grocer = (req: Request, res: Response) => {
             password_grocer
         }
 
-        login.loginGrocer(data, (error: any, verifiedPassword: any, id_grocer: string) => {
+        login.loginGrocer(data, (error: any, verifiedPassword: any, id_grocer: string, _role: string) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
                 if (verifiedPassword) {
                     let secretKey: any = process.env.SECRET_KEY;
                     let token: any = generateToken(
-                        { role: "grocer", email: email_grocer, id: id_grocer },
+                        { role: _role, email: email_grocer, id: id_grocer },
                         secretKey, new Date().getTime() + (2 * 60 * 1000)
                     )
                     return res.status(200).json({ status: 'Successful authentication', token: token });
