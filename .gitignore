@@ -2,9 +2,9 @@
 /node_modules
 
 # dotenv
-
 .env
 
+# dotenv
 
 
 #dist
