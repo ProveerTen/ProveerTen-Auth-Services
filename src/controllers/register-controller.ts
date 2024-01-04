@@ -6,6 +6,7 @@ import Grocer from '../models/Grocer';
 import Company from '../models/Company';
 
 import register from '../services/register';
+import { dataDecoded } from '../helpers/decoded-token';
 
 export const company = async (req: Request, res: Response) => {
 
@@ -51,57 +52,67 @@ export const company = async (req: Request, res: Response) => {
     }
 }
 
-export const provider = async (req: Request, res: Response) => {
-    res.status(200)
-    try {
-        const {
-            document_provider,
-            name_provider,
-            last_name_provider,
-            email_provider,
-            password_provider,
-            profile_photo_provider,
-            nit_company,
-            city_provider,
-            neighborhood,
-            street,
-            number_street,
-            number_provider
-        } = req.body;
+export const provider = async (req: any, res: Response) => {
 
-        const password_hash = await bcrypt.hash(password_provider, 10);
-
-
-        const data: Provider = {
-            document_provider,
-            name_provider,
-            last_name_provider,
-            email_provider,
-            password_provider: password_hash,
-            profile_photo_provider,
-            nit_company,
-            city_provider,
-            neighborhood,
-            street,
-            number_street,
-            number_provider
-        };
-
-        register.registerProvider(data, (error: any, result: any) => {
-            if (error) {
-                res.status(500).json({ "error": error.message });
-            } else {
-                res.status(200).json({ "Status": result[0][0].message_text });
-            }
-        });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            error: error,
-            message: `error registering provider`
+    const {role} = dataDecoded;
+    
+    if (role === 'company') {
+        try {
+            const {
+                document_provider,
+                name_provider,
+                last_name_provider,
+                email_provider,
+                password_provider,
+                profile_photo_provider,
+                nit_company,
+                city_provider,
+                neighborhood,
+                street,
+                number_street,
+                number_provider
+            } = req.body;
+    
+            const password_hash = await bcrypt.hash(password_provider, 10);
+    
+    
+            const data: Provider = {
+                document_provider,
+                name_provider,
+                last_name_provider,
+                email_provider,
+                password_provider: password_hash,
+                profile_photo_provider,
+                nit_company,
+                city_provider,
+                neighborhood,
+                street,
+                number_street,
+                number_provider
+            };
+    
+            register.registerProvider(data, (error: any, result: any) => {
+                if (error) {
+                    res.status(500).json({ "error": error.message });
+                } else {
+                    res.status(200).json({ "Status": result[0][0].message_text });
+                }
+            });
+    
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                error: error,
+                message: `error registering provider`
+            });
+        }
+    } else {
+        res.status(401).json({
+            message: `unauthorized user`
         });
     }
+
+    
 };
 
 export const grocer = async (req: Request, res: Response) => {
