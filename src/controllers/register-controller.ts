@@ -6,7 +6,6 @@ import Grocer from '../models/Grocer';
 import Company from '../models/Company';
 
 import register from '../services/register';
-import { dataDecoded } from '../helpers/decoded-token';
 
 export const company = async (req: Request, res: Response) => {
 
@@ -54,9 +53,6 @@ export const company = async (req: Request, res: Response) => {
 
 export const provider = async (req: any, res: Response) => {
 
-    const {role} = dataDecoded;
-    
-    if (role === 'company') {
         try {
             const {
                 document_provider,
@@ -106,13 +102,6 @@ export const provider = async (req: any, res: Response) => {
                 message: `error registering provider`
             });
         }
-    } else {
-        res.status(401).json({
-            message: `unauthorized user`
-        });
-    }
-
-    
 };
 
 export const grocer = async (req: Request, res: Response) => {

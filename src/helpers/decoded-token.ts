@@ -1,8 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
-import { DecodedToken } from '../models/decoded-token';
-
-export let dataDecoded: DecodedToken;
 
 export const authorizetoken = (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -16,25 +13,26 @@ export const authorizetoken = (req: Request, res: Response, next: NextFunction) 
 
         let secretKey = process.env.SECRET_KEY
 
-        jwt.verify(token, secretKey!, (err: VerifyErrors | null, decoded) => {
-            if (err) {
-                console.log("error", err);
-                return res.status(401).json({ auth: false, message: 'Error al autenticar el token' });
-            }
-
-            if (decoded) {
-                const { email, role, id } = decoded as DecodedToken;
-
-                dataDecoded = {
-                    email,
-                    role,
-                    id
+        jwt.verify(token, secretKey!, (err: VerifyErrors | null, decoded:any) => {
+            
+            if (decoded){
+                if (decoded.role === 'company') {
+                    next();                
+                } else {
+                    res.status(401).json({
+                        message: `unauthorized user`
+                    }); 
                 }
-
-                next();
             } else {
                 return res.status(401).json({ auth: false, message: 'Token inválido' });
             }
+
+            
+            if (err) {
+                console.log("error", err);
+                return res.status(401).json({ auth: false, message: 'Error al autenticar el token' });
+            } 
+            
         });
 
     } catch (error) {
