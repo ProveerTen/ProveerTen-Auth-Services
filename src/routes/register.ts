@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { provider, grocer, company } from '../controllers/register-controller'
 import validator from '../middlewares/register-validator'
-import { authorizetoken } from '../helpers/decoded-token';
+import { authorizetoken } from '../middlewares/decoded-token';
 
 const router = Router();
 
