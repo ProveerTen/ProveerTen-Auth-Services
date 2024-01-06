@@ -12,7 +12,7 @@ const loginCompany = (data: any, callback: any) => {
             }
             let idCompany: string = results[0][0].nit_company;
             let storedPassword: string = results[0][0].password_company;
-            let role: string = results[0][0].fk_id_rol;
+            let role: string = results[0][0].fk_name_rol;
             let verifiedPassword = comparePassword(data.password_company, storedPassword);
             callback(null, verifiedPassword, idCompany, role);
         });
@@ -32,7 +32,7 @@ const loginProvider = (data: any, callback: any) => {
             }
             let idProvider: string = results[0][0].document_provider;
             let storedPassword: string = results[0][0].password_provider;
-            let role: string = results[0][0].fk_id_rol;
+            let role: string = results[0][0].fk_name_rol;
             let verifiedPassword = comparePassword(data.password_provider, storedPassword);
             callback(null, verifiedPassword, idProvider, role);
         });
@@ -52,7 +52,7 @@ const loginGrocer = (data: any, callback: any) => {
             }
             let idGrocer: string = results[0][0].document_grocer;
             let storedPassword: string = results[0][0].password_grocer;
-            let role: string = results[0][0].fk_id_rol;
+            let role: string = results[0][0].fk_name_rol;
             let verifiedPassword = comparePassword(data.password_grocer, storedPassword);
             callback(null, verifiedPassword, idGrocer, role);
         });
