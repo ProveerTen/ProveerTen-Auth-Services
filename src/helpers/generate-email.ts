@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 const nodemailer = require('nodemailer');
-import { config } from 'dotenv';
 
-export const generateEmail = async (token: any, email: any, req: any, res: any) => {
+export const generateEmail = async (token: any, email: any, req: Request, res: Response) => {
     try {
         if (email) {
             const transporter = nodemailer.createTransport({
@@ -36,7 +35,7 @@ export const generateEmail = async (token: any, email: any, req: any, res: any) 
     }
 }
 
-export const emailConfirmation = async (email: any, req: any, res: any) => {
+export const emailConfirmation = async (email: any, req: Request, res: Response) => {
     try {
         if (email) {
             const transporter = nodemailer.createTransport({
@@ -108,12 +107,3 @@ export const generateWelcomeEmail = async (email: string, username: string, req:
         return res.status(500).json({ message: 'Error interno del servidor' });
     }
 }
-
-// export const generateWelcomeEmail = (username: string) => {
-//     return `
-//     <p>¡Hola ${username}!</p>
-//         <p>Bienvenido a nuestra plataforma. Agradecemos tu registro y esperamos que disfrutes de nuestros servicios.</p>
-//         <p>Gracias,</p>
-//         <p>Equipo de la Plataforma</p>
-//     `;
-// };

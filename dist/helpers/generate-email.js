@@ -118,11 +118,3 @@ const generateWelcomeEmail = (email, username, req, res) => __awaiter(void 0, vo
     }
 });
 exports.generateWelcomeEmail = generateWelcomeEmail;
-// export const generateWelcomeEmail = (username: string) => {
-//     return `
-//     <p>¡Hola ${username}!</p>
-//         <p>Bienvenido a nuestra plataforma. Agradecemos tu registro y esperamos que disfrutes de nuestros servicios.</p>
-//         <p>Gracias,</p>
-//         <p>Equipo de la Plataforma</p>
-//     `;
-// };

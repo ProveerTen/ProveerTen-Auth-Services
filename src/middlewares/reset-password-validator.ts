@@ -11,7 +11,7 @@ let paramCompanyEmailResetPassword:any = [
 ];
 
 let paramPassword: any = [
-    check('password').isLength({ min: 1, max: 15 })
+    check('password').isLength({ min: 8, max: 15 })
 ]
 
 

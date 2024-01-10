@@ -63,11 +63,17 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     let secret_key = process.env.SECRET_KEY;
     try {
         const decoded = jsonwebtoken_1.default.verify(token, secret_key);
-        const exp = decoded;
-        const expirationDate = new Date(exp * 1000);
-        if (expirationDate < new Date()) {
+        const expirationTimeInSeconds = decoded.exp;
+        console.log(decoded.exp);
+        const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+        //const exp: any = decoded;
+        //const expirationDate = new Date(exp * 1000);
+        if (expirationTimeInSeconds < currentTimeInSeconds) {
             console.log("Token expirado");
             return res.status(400).json({ message: "El token ha expirado" });
+            /* if (expirationDate < new Date()) {
+                console.log("Token expirado");
+                return res.status(400).json({ message: "El token ha expirado" });*/
         }
         else {
             let { email } = decoded;
@@ -80,7 +86,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 else {
                     (0, generate_email_1.emailConfirmation)(email, req, res);
                     console.log("Correo enviado exitodamente");
-                    return res.status(200).json({ message: result });
+                    return res.status(200).json({ message: result[0][0].message_text });
                 }
             });
         }
