@@ -1,5 +1,4 @@
 import connection from '../config/db-config';
-
 import Company from '../models/Company';
 import Provider from '../models/Provider';
 import Grocer from '../models/Grocer';
