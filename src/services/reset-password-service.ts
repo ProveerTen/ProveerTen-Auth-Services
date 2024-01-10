@@ -1,4 +1,3 @@
-import { error, log } from "console";
 import connection from "../config/db-config";
 import bcrypt from "bcrypt";
 

@@ -6,6 +6,7 @@ import Grocer from '../models/Grocer';
 import Company from '../models/Company';
 
 import register from '../services/register';
+import { generateWelcomeEmail } from '../helpers/generate-email';
 
 export const company = async (req: Request, res: Response) => {
 
@@ -39,6 +40,7 @@ export const company = async (req: Request, res: Response) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
+                generateWelcomeEmail(data.email_company, data.name_company, req, res);
                 res.status(200).json({ "Status": result[0][0].message_text });
             }
         })
@@ -51,6 +53,59 @@ export const company = async (req: Request, res: Response) => {
     }
 }
 
+
+export const provider = async (req: any, res: Response) => {
+
+        try {
+            const {
+                document_provider,
+                name_provider,
+                last_name_provider,
+                email_provider,
+                password_provider,
+                profile_photo_provider,
+                nit_company,
+                city_provider,
+                neighborhood,
+                street,
+                number_street,
+                number_provider
+            } = req.body;
+    
+            const password_hash = await bcrypt.hash(password_provider, 10);
+    
+    
+            const data: Provider = {
+                document_provider,
+                name_provider,
+                last_name_provider,
+                email_provider,
+                password_provider: password_hash,
+                profile_photo_provider,
+                nit_company,
+                city_provider,
+                neighborhood,
+                street,
+                number_street,
+                number_provider
+            };
+    
+            register.registerProvider(data, (error: any, result: any) => {
+                if (error) {
+                    res.status(500).json({ "error": error.message });
+                } else {
+                    res.status(200).json({ "Status": result[0][0].message_text });
+                }
+            });
+    
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                error: error,
+                message: `error registering provider`
+            });
+        }
+=======
 export const provider = async (req: Request, res: Response) => {
     res.status(200)
     try {
@@ -91,6 +146,7 @@ export const provider = async (req: Request, res: Response) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
+                generateWelcomeEmail(data.email_provider, data.name_provider, req, res);
                 res.status(200).json({ "Status": result[0][0].message_text });
             }
         });
@@ -102,6 +158,7 @@ export const provider = async (req: Request, res: Response) => {
             message: `error registering provider`
         });
     }
+
 };
 
 export const grocer = async (req: Request, res: Response) => {
@@ -146,6 +203,7 @@ export const grocer = async (req: Request, res: Response) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
+                generateWelcomeEmail(data.email_grocer, data.name_grocer, req, res);
                 res.status(200).json({ "Status": result[0][0].message_text });
             }
         })

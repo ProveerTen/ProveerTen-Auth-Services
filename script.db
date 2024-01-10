@@ -1,66 +1,14 @@
-
-drop database proveerten;
-
-create database ProveerTen;
-use ProveerTen; 
-
-create table Provider (
-nit_provider char(15) not null,
-email_provider varchar (55) primary key, 
-name_provider varchar (50) not null,
-last_name_provider varchar (40) not null,
-name_company varchar (100) not null,
-city_provider varchar (40) not null,
-password_provider varchar (100),
-profile_photo_provider varchar (100) null,
-cover_photo_provier varchar (100) null,
-description_provider varchar(1000)
-);
-
-create table ProviderPhone (
-number_provider varchar (15),
-fk_phone_email_provider varchar (55),
-foreign key (fk_Phone_email_Provider) references Provider (email_Provider)
-);
-
-create table ProviderAddress (
-neighborhood varchar (40) not null,
-street varchar (30) not null,
-number_street varchar (25),
-fk_address_email_provider varchar (55),
-foreign key (fk_address_email_provider) references Provider (email_provider)
-);
-
-delimiter //
-create procedure insertProvider
--- insertProvider
-(
-    in nit_provider_ char(15),
-    in email_provider_ varchar(55),
-    in name_provider_ varchar(50),
-    in last_name_provider_ varchar(40),
-    in name_company_ varchar(100),
-    in city_provider_ varchar(40),
-    in password_provider_ varchar(100),
-    in description_provider_ varchar(1000),
-    in number_provider_ varchar(15),
-    in neighborhood_ varchar(40),
-    in street_ varchar(30),
-    in number_street_ varchar(25),
-    out message_text varchar (255)
-=======
 create database ProveerTen;
 use ProveerTen;
 
 -- Roles
 create table rol 
 (
-id_rol varchar (5) primary key,
-name_rol varchar (25) not null
+name_rol varchar (25) primary key
 );
-insert into rol (id_rol,name_rol) values ('1','Company');
-insert into rol (id_rol,name_rol) values ('2','Provider');
-insert into rol (id_rol,name_rol) values ('3','Grocer');
+insert into rol (name_rol) values ('company');
+insert into rol (name_rol) values ('provider');
+insert into rol (name_rol) values ('grocer');
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
 -- CompaÃ±ia
@@ -76,13 +24,13 @@ profile_photo_company varchar (100) null,
 cover_photo_company varchar (100) null,
 foundation_company date null,
 description_company varchar(255) null,
-fk_id_rol varchar (5), 
-foreign key (fk_id_rol) references rol (id_rol)
+fk_name_rol varchar (25), 
+foreign key (fk_name_rol) references rol (name_rol)
 );
+
 
 -- Procedimiento de insertar compañia
 delimiter //
-
 create procedure insertCompany
 -- insertCompany
 (
@@ -95,10 +43,9 @@ create procedure insertCompany
  in cover_photo_company varchar (100),
  in foundation_company date,
  in description_company varchar(255),
- in rol varchar (5),
+ in name_rol varchar (25),
  out message_text varchar (255)
 )
-  
 begin
     declare count_company int;
     declare error_message varchar(255);
@@ -117,7 +64,7 @@ begin
 	cover_photo_company,
 	foundation_company,
 	description_company,
-    fk_id_rol
+    fk_name_rol
         ) values (
             nit_company,
 			name_company,
@@ -128,39 +75,92 @@ begin
 			cover_photo_company,
 			foundation_company,
 			description_company,
-            rol
+            name_rol
 		);
         set message_text = 'The company was successfully entered';
     end if;
     select message_text;
 end //
+delimiter ;
+
+-- Procedimiento para traerse la data de la compania
+-- Principal uso "Login"
+delimiter **
+create procedure get_data_company (in _email_company varchar(55))
+begin
+	declare count_company int;
+	declare error_message varchar(65);
+    select count(*) into count_company from company where email_company = _email_company;
+    if count_company = 0 then 
+       set error_message = 'error, company user does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+	else
+		select nit_company, email_company, password_company, fk_name_rol from company where email_company = _email_company;
+    end if;
+end **
+
+
+-- sp para traer la data del perfil de la compania
+delimiter //
+create procedure get_data_profile_company
+(
+in _nit_company varchar (15)
+)
+begin
+select nit_company, name_company, email_company,national_line_company,profile_photo_company,cover_photo_company,foundation_company,description_company from company where nit_company = _nit_company;
+end //
+delimiter ;
+
+delimiter //
+
+create procedure getCompany_EmailExist (
+    in email_company_param varchar(55),
+    out message_text varchar(255)
+)
+begin
+    declare countCompany int;
+    declare error_message varchar(255);
+
+    select count(*) into countCompany from company where email_company = email_company_param;
+
+    if countCompany = 0 then
+        set error_message = 'error, does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+    else
+        set message_text = 'The company exists';
+    end if;
+
+    select message_text;
+end //
 
 delimiter ;
-/*
-'colgate@gmail.com','unic1254'
-'alpina@gmail.com','yheol365'
-'colombina@gmail.com','cb21456'
-'nestle@gmail.com','ikol7458'
-'noel@gmail.com','lops6312'
-'postobon@gmail.com','dowhile566'
-'bavaria@gmail.com','kara12345'
-'ramo@gmail.com','choco1254'
-'bimbo@gmail.com','panesito14'
-'colanta@gmail.com','ulme5478'
-*/
 
-call insertCompany ('10122012334-5', 'Colgate', 'colgate@gmail.com','$2b$10$KNZjFkf8XTtkjuOIcW4fE.0EpBQxnjWlylObZIURHdn/e8txITFRW','555-123-4567',null,null,"2004-01-10",'Descripcion de colgate','1',@message_text);
-call insertCompany ('89954874854-1', 'Alpina', 'alpina@gmail.com','$2b$10$6gy8q20.MhyeuqwZDdkZ9.Q9qf469sHfDIDY7NqvQN9FxI/wuUdrG','666-123-1568',null,null,"2005-02-11",'Descripcion tropiquindio','1',@message_text);
-call insertCompany ('20122012334-7', 'Colombina', 'colombina@gmail.com','$2b$10$WJAxCZWGf7kaPqYV1DHocu8bPdTsynGr0VfyDYterlgQUP96PBt9a','754-985-1147',null,null,"1985-03-17",'Descripcion Colombina','1',@message_text);
-call insertCompany ('90122016699-5', 'Nestle', 'nestle@gmail.com','$2b$10$dcab3YaMnBHCudnMpb1UveeoIwofVwv.n5ulTR73t8KQQtc3.JfPK','154-994-1412',null,null,"2014-05-24",'Descripcion nestle','1',@message_text);
-call insertCompany ('10568945469-6', 'Noel', 'noel@gmail.com','$2b$10$IavBYty28jt58dLwzpDOXeYVGN/.WMzl/ytSicRSVSQbayeyRbVmi','424-845-8471',null,null,"2011-12-31",'Descripcion noel','1',@message_text);
-call insertCompany ('55122052332-5', 'Postobon', 'postobon@gmail.com','$2b$10$eCXUoAmG7SaL9o5k4YshnuQcfc1NAhC0hgV1UGqZYECajAcoK05RS','396-741-6541',null,null,"2006-02-13",'Descripcion postobon','1',@message_text);
-call insertCompany ('28071112131-2', 'Bavaria', 'bavaria@gmail.com','$2b$10$zpdUtGrmpOy36kdB3gJEIOnCsbrq8DF5lCo8sqmp/2/.y.9vcKXEq','258-357-7536',null,null,"2007-08-14",'Descripcion bavaria','1',@message_text);
-call insertCompany ('40144014385-5', 'Ramo', 'ramo@gmail.com','$2b$10$UQH9T1JBAAQmT4WSs2t0V.q1vfLGTN.mX/0N/EcnbRgk8PPGzXEKG','951-841-9632',null,null,"2018-09-11",'Descripcion ramo','1',@message_text);
-call insertCompany ('77233193777-0', 'Bimbo', 'bimbo@gmail.com','$2b$10$KqmFfv6DjOOvm5QItmTMj.A5zjbTCcYDcNsJnFdXP1nFVDuj9wVOq','831-761-6842',null,null,"2008-02-15",'Descripcion bimbo','1',@message_text);
-call insertCompany ('33199025484-9', 'Colanta', 'colanta@gmail.com','$2b$10$SNZZZOzPKPF61MYI80ELDO3lq8gNrtJ3AttmgpczP59kASHzt2g52','878-226-267',null,null,"2008-01-23",'Descripcion colanta','1',@message_text);
+delimiter //
 
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+create procedure updatePasswordCompany (
+    in email_company varchar (55),
+	in password_company varchar (100),
+    out message_text varchar(255)
+)
+begin
+    declare countCompany int;
+    declare error_message varchar(255);
+
+    select count(*) into countCompany from company where company.email_company = email_company;
+
+    if countCompany = 0 then
+        set error_message = 'error, does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+    else
+		update company set company.password_company = password_company where company.email_company = email_company;
+        set message_text = 'company password update successful';
+    end if;
+
+    select message_text;
+end //
+
+delimiter ;
+
 
 
 /*----------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -175,8 +175,8 @@ password_provider varchar (100) not null,
 profile_photo_provider varchar (100) null, 
 fk_nit_company varchar (15), 
 foreign key (fk_nit_company) references company (nit_company),
-fk_id_rol varchar (5), 
-foreign key (fk_id_rol) references rol (id_rol)
+fk_name_rol varchar (25), 
+foreign key (fk_name_rol) references rol (name_rol)
 );
 create table locationProvider(
 fk_document_locationProvider varchar (10), 
@@ -192,195 +192,6 @@ foreign key (fk_document_phoneProvider) references Provider (document_provider),
 number_provider varchar (15)
 );
 
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
-
-
-
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
-
--- Tendero
-
-create table grocer (
-document_grocer varchar (10) primary key,
-name_grocer varchar (40) not null,
-last_name_grocer varchar (40) not null,
-email_grocer varchar (55) unique not null,
-name_store varchar (50) not null,
-profile_photo_grocer varchar (100) null,
-cover_photo_grocer varchar (100) null,
-password_grocer varchar (100),
-fk_id_rol varchar (5), 
-foreign key (fk_id_rol) references rol (id_rol)
-);
-
-create table locationGrocer (
-fk_document_locationGrocer varchar (10),
-foreign key (fk_document_locationGrocer) references grocer (document_grocer),
-city_grocer varchar (40) not null,
-neighborhood varchar (40) not null,
-street varchar (30) not null,
-number_street varchar (25),
-apartment varchar (25)
-);
-
-create table phoneGrocer (
-fk_document_phoneGrocer varchar (10),
-foreign key (fk_document_phoneGrocer) references grocer (document_grocer),
-number_grocer varchar (15)
-);
-
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
-
-
-
-
-
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
-
-/*   Categoria   */
-create table category (
-    id_category int auto_increment primary key,
-    nombre_category varchar (50) not null,
-    descripcion_category varchar (150)
-);
-
-/* Producto */
-
-create table Product (
-id_product int auto_increment primary key,
-name_product varchar(20) not null,
-description_product varchar(80) not null,
-purchase_price_product float not null,
-unit_purchase_price_product float,
-suggested_unit_selling_price_product float,
-purchase_quantity int,
-stock_product int not null,
-content_product varchar(50),
-image_product varchar(500) not null,
-availability_product varchar(15) not null,
-fk_product_nit_company varchar (15), foreign key (fk_product_nit_company) references company(nit_company)
-);
-
-create table Product_category (
-fk_product_category_id_product int, foreign key (fk_product_category_id_product) references product(id_product),
-fk_product_category_id_category int, foreign key (fk_product_category_id_category) references category(id_category)
-);
-
-/*----------------------------------------------------------------------------------------------------------------------------------------------*/
-
-
-
-
-/*              Proveedor           */
-INSERT INTO provider (document_provider, name_provider, last_name_provider, email_provider, password_provider, fk_nit_company)
-VALUES 
-('24851785','Juan Felipe','Pérez Holmo','perezholmo@gmail.com','time1234','10122012334-5'),
-('17217724','Nicolas Luis','Ocampo Ramírez','nicolasluis@gmail.com','rima963', '89954874854-1'),
-('36987159','John Rivera','Rodríguez González','johnrivera@gmail.com','ejem154', '20122012334-7'),
-('12789369','Andrés Felipe','Ramírez González','andresfelipe@gmail.com','unkm485', '90122016699-5'),
-('13258745','María Fernanda','Martínez Ramírez','mariafernanda@gmail.com','ikad265', '58945544176-3'),
-('25863476','Valentina Isabel','Pérez Torres','valentinaisabel@gmail.com','olakdje854', '55122052332-5'),
-('26731946','Diego Andrés','Jiménez Castro','diegoandres@gmail.com','kajdue945', '28071112131-2'),
-('22372684','Javier Alejandro','Torres López','javieralejandro@gmail.com','leoakd566', '40144014385-5'),
-('11556821','Leroy Jethro ','Gibbs Garcia','leroyjethro@gmail.com','marin1452', '77233193777-0'),
-('9214587','Laura Catalina','González Ramírez','lauracatalina@gmail.com','ikml254', '33199025484-9');
-
-INSERT INTO locationProvider (fk_document_locationProvider, city_provider, neighborhood, street, number_street) 
-VALUES
-('24851785', 'Bogotá', 'Chapinero', 'Calle 70', '10-25'),
-('17217724', 'Medellín', 'Envigado', 'Carrera 32', '45-12'),
-('36987159', 'Cali', 'San Fernando', 'Avenida 5N', '18-30'),
-('12789369', 'Barranquilla', 'Riomar', 'Carrera 47', '80-15'),
-('13258745', 'Cartagena', 'Bocagrande', 'Calle 7', '15-50'),
-('25863476', 'Manizales', 'Palermo', 'Calle 23', '12-38'),
-('26731946', 'Santa Marta', 'El Rodadero', 'Carrera 9', '22-17'),
-('22372684', 'Pereira', 'La Circunvalar', 'Avenida 30', '40-21'),
-('11556821', 'Villavicencio', 'Ciudad Porfía', 'Calle 50', '8-75'),
-('9214587', 'Cúcuta', 'San Mateo', 'Carrera 15', '32-40');
-
-INSERT INTO phoneProvider (fk_document_phoneProvider,number_provider) 
-VALUES
-('24851785','123456789'),
-('17217724','987654321'),
-('36987159','567890123'),
-('12789369','345678901'),
-('13258745','789012345'),
-('25863476','234567890'),
-( '26731946','890123456'),
-( '22372684','456789012'),
-( '11556821','012345678'),
-( '9214587','654321098');
-
-/*              Tendero           */
-
-INSERT INTO grocer (document_grocer, name_grocer, last_name_grocer, email_grocer, name_store, city_grocer, password_grocer)
-VALUES
-('1234567890', 'Laura Valentina', 'Pérez Gómez', 'lauravalentina@yahoo.com', 'Super Tienda', 'Bogotá', 'contrasena123'),
-('0987654321', 'Juan David', 'Rodríguez Vargas', 'juandavid@gmail.com', 'Tienda Express', 'Medellín', 'password456'),
-('2345678901', 'Ana María', 'Sánchez López', 'anamaria@gmail.com', 'Tienda Rápida', 'Cali', 'clave789'),
-('3456789012', 'Felipe Alejandro', 'Jiménez Ramírez', 'felipealejandro@gmail.com', 'Mega Mercado', 'Cartagena', 'secret456'),
-('4567890123', 'Carolina Fernanda', 'Moreno Herrera', 'carolina@gmail.com', 'Tienda Económica', 'Barranquilla', 'p455word'),
-('5678901234', 'Oscar Andrés', 'González Castro', 'orcarandres@gmail.com', 'Gran Tienda', 'Manizales', 'segura123'),
-('6789012345', 'María José', 'Ríos Torres', 'mariajose@gmail.com', 'Super Almacén', 'Pereira', 'clave432'),
-('7890123456', 'Esteban Alberto', 'Silva Mendoza', 'estabanalberto@gmail.com', 'Tienda 24/7', 'Villavicencio', 'contrasena789'),
-('8901234567', 'Valeria Isabel', 'Ramírez Cárdenas', 'valeriaisabel@gmail.com', 'Tienda Popular', 'Ibagué', 'p4ssw0rd'),
-('9012345678', 'Javier Eduardo', 'Martínez Molina', 'javiereduardo@gmail.com', 'Tienda del Barrio', 'Pasto', 'clave987');
-
-INSERT INTO locationGrocer(fk_document_locationGrocer, neighborhood, street, number_street, apartment)
-VALUES
-('1234567890','Centro', 'Carrera 10', '123', 'Apto 301'),
-('0987654321','Laureles', 'Calle 20', '456', 'Apto 102' ),
-('2345678901','San Antonio', 'Avenida 30', '789', 'Apto 501'),
-('3456789012','Bocagrande', 'Carrera 5', '234', 'Apto 102'),
-('4567890123','Los Pinos', 'Calle 15', '567', 'Apto 202'),
-('5678901234','El Prado', 'Carrera 25', '890', 'Apto 401'),
-('6789012345','Alamos', 'Avenida 40', '123', 'Apto 301'),
-('7890123456','Candelaria', 'Calle 10', '456', 'Apto 102'),
-('8901234567','Belén', 'Carrera 15', '789', 'Apto 201'),
-('9012345678','Centenario', 'Avenida 20', '012', 'Apto 301');
-
-INSERT INTO phoneGrocer (fk_document_phoneGrocer,number_grocer)
-VALUES
-('1234567890','3114756954'),
-('0987654321','3256848478'),
-('2345678901','3111445745'),
-('3456789012','3059658412'),
-('4567890123','3418546854'),
-('5678901234','3264584612'),
-('6789012345','3215848669'),
-('7890123456','3362142635'),
-('8901234567','3452847561'),
-('9012345678','3518954645');
-
-
-INSERT INTO Product (
-    name_product,
-    description_product,
-    purchase_price_product,
-    unit_purchase_price_product,
-    suggested_unit_selling_price_product,
-    purchase_quantity,
-    stock_product,
-    content_product,
-    image_product,
-    availability_product,
-    fk_product_nit_company
-) VALUES
-('Crema de dientes tripe accion x12 unidades', 'crema para lavarse los dientes sabor a menta', 16000, 1.333, 1600, 12, 200, '75ml', 'https://drogueriaspasteur.com/cdn/shop/products/200025541crema-dental-colgate-t-a-12uni-x-22ml_1200x1200.jpg?v=1611336394', 'disponible', '10122012334-5'),
-('Avena Alpina original x12u', 'Rica bebida de avena para el desayuno', 28000, 1500, 3000, 12, 50, '250g', 'https://http2.mlstatic.com/D_NQ_NP_983591-MCO54729353116_032023-O.webp', 'disponible', '10122012334-5'),
-('Bom bom bum x24u', 'Caramelos de chocolate y caramelo', 1200, 0.1, 1500, 24, 100, '19g', 'https://mercasur.com.co/rails/active_storage/representations/proxy/eyJfcmFpbHMiOnsiZGF0YSI6ODI0NjU2LCJwdXIiOiJibG9iX2lkIn19--6582b5ab502a369b892f7ec66bae40a578b2cc64/eyJfcmFpbHMiOnsiZGF0YSI6eyJmb3JtYXQiOiJqcGciLCJyZXNpemVfdG9fZml0IjpbNjAwLDYwMF19LCJwdXIiOiJ2YXJpYXRpb24ifX0=--121ebfcd4293f99df590ac1a60ec2d53d6f75b42/7702011281180-1.jpg?locale=es', 'disponible', '10122012334-5'),
-('Leche condensada x26u', 'Leche condensada para postres', 8000, 0.667, 9000, 15, 120, '25g','https://bodegalaesperanza.com/images/bodegalaesperanza/products/5ff46d4c108fe.jpeg', 'disponible', '10122012334-5'),
-('Saltinas tris x12u', 'Galletas saladas', 3000, 0.25, 3500, 25, 180, '22g', 'https://maxitenjo.com.co/cdn/shop/products/bbb_7c0a244a-3964-4def-9b10-4a56d5afd969_1024x.jpg?v=1593198917', 'disponible', '10122012334-5'),
-('Gaseosa Colombiana x12u', 'Refresco sabor cola', 2500, 0.208, 3000, 10, 50, '1L', 'https://distriplaza.co/wp-content/uploads/2021/10/DISTRIPLAZA.COM-41.jpg', 'disponible', '10122012334-5'),
-('Cerveza Poker en lata x24u', 'Cerveza nacional', 5000, 0.417, 6000, 8, 40, '330ml', 'https://static.wixstatic.com/media/74bd6e_d75e206124814bbb9a768d1b87242421~mv2.jpg/v1/fill/w_560,h_560,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/74bd6e_d75e206124814bbb9a768d1b87242421~mv2.jpg', 'disponible', '10122012334-5'),
-('Brownie Chocoramo Arequipe x6u', 'Pastelito de chocolate', 2000, 0.167, 2500, 18, 90, '80g', 'https://http2.mlstatic.com/D_NQ_NP_603768-MCO44520756218_012021-O.webp', 'disponible', '10122012334-5'),
-('Torta casero x6', 'Torta casera variada', 12000, 1, 15000, 5, 10, '1 unidad','https://bodegalaesperanza.com/images/bodegalaesperanza/products/60355b3419442.jpeg', 'disponible', '10122012334-5'),
-('Leche entera maxilitro x6', 'Leche entera para consumo diario', 4500, 0.375, 5000, 22, 200, '1.100ml','https://static.merqueo.com/images/products/large/4244644c-934f-4d2a-9280-f580d26c1f08.jpg', 'disponible', '10122012334-5');
-
-
-
-
-
 
 delimiter //
 
@@ -394,7 +205,7 @@ in email_provider varchar (55),
 in password_provider varchar (100),
 in profile_photo_provider varchar (100),
 in fk_nit_company varchar (15),
-in rol varchar (5),
+in name_rol varchar (25),
 in city_provider varchar (15),
 in neighborhood varchar (40),
 in street varchar (30),
@@ -405,40 +216,12 @@ out message_text varchar (255)
 begin
     declare count_provider int;
     declare error_message varchar(255);
-
-    select count(*) into count_provider from provider where email_provider = email_provider_;
-
     select count(*) into count_provider from provider where provider.email_provider = email_provider;
-
     if count_provider > 0 then
         set error_message = 'error provider user already exists';
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message ;
     else
         insert into provider (
-
-            nit_provider,
-            email_provider,
-            name_provider,
-            last_name_provider,
-            name_company,
-            city_provider,
-            password_provider,
-            description_provider
-        ) values (
-            nit_provider_,
-            email_provider_,
-            name_provider_,
-            last_name_provider_,
-            name_company_,
-            city_provider_,
-            password_provider_,
-            description_provider_
-        );
-        
-		insert into ProviderPhone values (number_provider_, email_provider_);
-        insert into ProviderAddress values (neighborhood_, street_, number_street_, email_provider_);
-       
-
 	document_provider,
 	name_provider,
 	last_name_provider,
@@ -446,7 +229,7 @@ begin
 	password_provider,
     profile_photo_provider,
 	fk_nit_company,
-    fk_id_rol
+    fk_name_rol
         ) values (
             document_provider,
 	name_provider,
@@ -455,7 +238,7 @@ begin
 	password_provider,
     profile_photo_provider,
 	fk_nit_company,
-    rol
+    name_rol
 		);
         insert into locationProvider (
         fk_document_locationProvider, 
@@ -484,29 +267,69 @@ end //
 
 delimiter ;
 
-call insertProvider ("2238t9-25", "proveerTen01@gmail.com", "Alejandro", "Alvarado", "Proveerten", "Armenia", "5522", "prueba 1", "3106124260", "El Granada", "15", "3b", @message_text);
-
-select * from provider;
-select * from ProviderPhone;
-select * from ProviderAddress;
-
+-- Procedimiento para traerse la data del proveedor 
+-- Principal uso "Login"
 delimiter //
-create procedure get_data_provider(in email_provider_ varchar(55))
+create procedure get_data_provider (in _email_provider varchar(55))
 begin
 	declare count_provider int;
-    declare error_message varchar(65);
-    select count(*) into count_provider from provider where email_provider = email_provider_;
-    if count_provider = 0 then
-        set error_message = 'error provider user does not exist';
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message ;
-    else
-    select email_provider, password_provider
-    from Provider
-    where email_provider = email_provider_;
+	declare error_message varchar(65);
+    select count(*) into count_provider from provider where email_provider = _email_provider;
+    if count_provider = 0 then 
+       set error_message = 'error, provider user does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+	else
+		select document_provider, email_provider, password_provider, fk_name_rol from provider where email_provider = _email_provider;
     end if;
+end //
 
-call insertProvider ('24851785','Juan Felipe','Pérez Holmo','perezholmo@gmail.com','time1234',null,'10122012334-5','2','Bogotá', 'Chapinero', 'Calle 70', '10-25',
-'123456789',@message_text);
+-- sp para traer la data del perfil del proveedor
+delimiter //
+create procedure get_data_profile_provider
+(
+in document_provider varchar (10)
+)
+begin
+select document_provider,name_provider,last_name_provider,email_provider,profile_photo_provider,fk_nit_company,city_provider,neighborhood,street,number_street,number_provider from provider inner join locationProvider on document_provider = fk_document_locationProvider 
+inner join phoneProvider on document_provider = fk_document_phoneProvider where provider.document_provider = document_provider;
+end //
+delimiter ;
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+-- Tendero
+
+create table grocer (
+document_grocer varchar (10) primary key,
+name_grocer varchar (40) not null,
+last_name_grocer varchar (40) not null,
+email_grocer varchar (55) unique not null,
+name_store varchar (50) not null,
+profile_photo_grocer varchar (100) null,
+cover_photo_grocer varchar (100) null,
+password_grocer varchar (100),
+fk_name_rol varchar (25), 
+foreign key (fk_name_rol) references rol (name_rol)
+);
+
+create table locationGrocer (
+fk_document_locationGrocer varchar (10),
+foreign key (fk_document_locationGrocer) references grocer (document_grocer),
+city_grocer varchar (40) not null,
+neighborhood varchar (40) not null,
+street varchar (30) not null,
+number_street varchar (25),
+apartment varchar (25)
+);
+
+create table phoneGrocer (
+fk_document_phoneGrocer varchar (10),
+foreign key (fk_document_phoneGrocer) references grocer (document_grocer),
+number_grocer varchar (15)
+);
+
 
 delimiter //
 
@@ -522,7 +345,7 @@ in profile_photo_grocer varchar (100),
 in cover_photo_grocer varchar (100),
 in city_grocer varchar (40),
 in password_grocer varchar (100),
-in rol varchar (5),	
+in name_rol varchar (25),	
 in neighborhood varchar (40),
 in street varchar (30),
 in number_street varchar (25),
@@ -547,7 +370,7 @@ name_store,
 profile_photo_grocer,
 cover_photo_grocer,
 password_grocer,
-fk_id_rol
+fk_name_rol
         ) values (
 document_grocer,
 name_grocer,
@@ -557,7 +380,7 @@ name_store,
 profile_photo_grocer,
 cover_photo_grocer,
 password_grocer,
-rol
+name_rol
 		);
         insert into locationGrocer (
         fk_document_locationGrocer,
@@ -590,137 +413,9 @@ end //
 
 delimiter ;
 
-call get_data_provider ('ejemplo@proveedor.com');
-
-create table Grocer (
-email_grocer varchar (55) primary key,
-name_grocer varchar (40) not null,
-last_name_grocer varchar (40) not null,
-name_store varchar (50) not null,
-city_grocer varchar (40) not null,
-password_grocer varchar (100)
-);
-
-create table GrocerAddress (
-neighborhood varchar (40) not null,
-street varchar (30) not null,
-number_street varchar (25),
-apartment varchar (25),
-fk_address_email_grocer varchar (55),
-foreign key (fk_address_email_grocer) references Grocer (email_grocer)
-);
-
-create table GrocerPhone (
-number_grocer varchar (15),
-fk_phone_email_grocer varchar (55),
-foreign key (fk_phone_email_grocer) references grocer (email_grocer)
-);
-
-delimiter //
-create procedure insertGrocer  (
-	in email_grocer_ varchar (55),
-	in name_grocer_ varchar (40),
-    in last_name_grocer_ varchar (40),
-    in name_store_ varchar (50),
-    in city_grocer_ varchar (40),
-    in password_grocer_ varchar (100),
-    in number_grocer_ varchar (15),
-    in neighborhood_ varchar (40),
-    in street_ varchar (30),
-    in number_street_ varchar (25),
-    in apartment_ varchar (25),
-    out message_text varchar (255)
-)
-begin 
-	declare countGrocer int;
-	declare error_message varchar (255);
-    
-    select count(*)  into countGrocer from Grocer where email_grocer = email_grocer_;
-    
-		if countgrocer > 0 then 
-        set error_message = 'error grocer user already exists';
-          SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message ;
-        
-        else 
-        insert into Grocer values (email_grocer_, name_grocer_, last_name_grocer_, name_store_,city_grocer_,password_grocer_);
-		insert into GrocerPhone values (number_grocer_,email_grocer_);
-		insert into GrocerAddress  values (neighborhood_,street_ ,number_street_,apartment_, email_grocer_ );
-        
-              set message_text = 'The grocer was successfully entered';
-         
-         end if;
-         select message_text;
-end //
-
-delimiter ;
-
-call insertGrocer  ("prove@gmail.com", "Jhoan", "Alvarado", "tiendaQQ", "Armenia", "12345", "3106124260", "El modelo", "25", "6g", "5");
-
-select * from Grocer;
-select * from GrocerAddress;
-select * from GrocerPhone;
-
-delimiter //
-create procedure get_data_grocer(in email_grocer_ varchar(55))
-begin
-	declare count_grocer int;
-    declare error_message varchar(65);
-    select count(*) into count_grocer from grocer where email_grocer = email_grocer_;
-    if count_grocer = 0 then
-        set error_message = 'error grocer user does not exist';
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message ;
-    else
-    select email_grocer, password_grocer
-    from grocer
-    where email_grocer = email_grocer_ ;
-    end if;
-call insertGrocer('1234567890', 'Laura Valentina', 'Pérez Gómez', 'lauravalentina@yahoo.com', 'Super Tienda',null,null, 'Bogotá', 'contrasena123','Centro', 'Carrera 10', '123', 'Apto 301','3114756954',@message_text);
-=======
-call insertGrocer('1234567890', 'Laura Valentina', 'Pérez Gómez', 'lauravalentina@yahoo.com', 'Super Tienda',null,null, 'Bogotá', 'contrasena123','3','Centro', 'Carrera 10', '123', 'Apto 301','3114756954',@message_text);
-
--- Procedimiento para traerse la data de la compania
--- Principal uso "Login"
-delimiter **
-create procedure get_data_company (in _email_company varchar(55))
-begin
-	declare count_company int;
-	declare error_message varchar(65);
-    select count(*) into count_company from company where email_company = _email_company;
-    if count_company = 0 then 
-       set error_message = 'error, company user does not exist';
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
-	else
-		select nit_company, email_company, password_company, fk_id_rol from company where email_company = _email_company;
-    end if;
-end **
-
-call get_data_company('colgate@gmail.com');
-
-
-
--- Procedimiento para traerse la data del proveedor 
--- Principal uso "Login"
-delimiter //
-create procedure get_data_provider (in _email_provider varchar(55))
-begin
-	declare count_provider int;
-	declare error_message varchar(65);
-    select count(*) into count_provider from provider where email_provider = _email_provider;
-    if count_provider = 0 then 
-       set error_message = 'error, provider user does not exist';
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
-	else
-		select document_provider, email_provider, password_provider, fk_id_rol from provider where email_provider = _email_provider;
-    end if;
-end //
-
-call get_data_provider('perezholmo@gmail.com');
-
-
-
 -- Procedimiento para traerse la data del tendero 
 -- Principal uso "Login"
-delimiter <<
+delimiter //
 create procedure get_data_grocer (in _email_grocer varchar(55))
 begin
 	declare count_grocer int;
@@ -730,43 +425,10 @@ begin
        set error_message = 'error, grocer user does not exist';
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
 	else
-		select document_grocer, email_grocer, password_grocer, fk_id_rol from grocer where email_grocer = _email_grocer;
+		select document_grocer, email_grocer, password_grocer, fk_name_rol from grocer where email_grocer = _email_grocer;
     end if;
-end 
-
-call get_data_grocer('lauravalentina@yahoo.com');
-
-
--- sp para traer la data del perfil de la compania
-delimiter //
-create procedure get_data_profile_company
-(
-in _nit_company varchar (15)
-)
-begin
-select nit_company, name_company, email_company,national_line_company,profile_photo_company,cover_photo_company,foundation_company,description_company from company where nit_company = _nit_company;
-end //
+end // 
 delimiter ;
-
-call get_data_profile_company('10122012334-5');
-
-
-
--- sp para traer la data del perfil del proveedor
-delimiter //
-create procedure get_data_profile_provider
-(
-in document_provider varchar (10)
-)
-begin
-select document_provider,name_provider,last_name_provider,email_provider,profile_photo_provider,fk_nit_company,city_provider,neighborhood,street,number_street,number_provider from provider inner join locationProvider on document_provider = fk_document_locationProvider 
-inner join phoneProvider on document_provider = fk_document_phoneProvider where provider.document_provider = document_provider;
-end //
-delimiter ;
-
-call get_data_profile_provider('24851785');
-
-
 
 -- sp para traer la data del perfil del tendero
 delimiter //
@@ -778,13 +440,6 @@ begin
 select document_grocer,name_grocer,last_name_grocer, email_grocer,name_store,profile_photo_grocer,cover_photo_grocer,city_grocer,neighborhood,street,number_street,apartment,number_grocer from grocer inner join locationGrocer on document_grocer = fk_document_locationGrocer 
 inner join phoneGrocer on document_grocer = fk_document_phoneGrocer where grocer.document_grocer = document_grocer;
 end //
-
-call get_data_profile_grocer ('1234567890');
-
-select * from grocer;
-
-
-
 
 delimiter //
 
@@ -810,183 +465,9 @@ end //
 
 delimiter ;
 
-call get_data_grocer ('ejempl2@gmail.com');
-
--- orden de compra
-Create table Order_  (
-cod_order int auto_increment primary key, 
-order_date timestamp default current_timestamp,
-state_order varchar (20) not null,
-delivery_date timestamp,  
-final_amount float (10,2),
-comments varchar (255),
-fk_order_email_grocer varchar (55),
-foreign key (fk_order_email_grocer) references Grocer (email_grocer)
-);
-
-delimiter //
-create procedure insert_order(
-    in cod_order_ int,
-    in order_date_ timestamp,
-    in state_order_ varchar(20),
-    in delivery_date_ timestamp,
-    in final_amount_ float(10,2),
-    in comments_ varchar(255),
-    in fk_order_email_grocer_ varchar(55)
-)
-begin
-    declare existing_order int;
-        declare error_message varchar (255);
-
-    select count(*) into existing_order from order_ where cod_order = p_cod_order;
-
-    if existing_order = 0 then
-    
-        insert into order_ (cod_order, order_date, state_order, delivery_date, final_amount, comments, fk_order_email_grocer)
-        values (cod_order_, order_date_, state_order_, delivery_date_, final_amount_, comments_, fk_order_email_grocer_);
-        
-        select 'nuevo registro insertado correctamente' as message;
-    else
-     set error_message = 'Error inserting order, check the data';
-          signal sqlstate  '45000' set message_text = error_message ;
-    end if;
-end//
-
-delimiter ;
-
-create table Category (
-	id_category varchar(4) primary key,
-	name_category varchar(12) not null,
-	description_category varchar(20) null
-);
-
-select * from Category; 
-
-create table Product (
-id_product varchar(15) primary key,
-name_product varchar(20) not null,
-description_product varchar(80) not null,
-unitPrice_product float not null,
-suggestedPrice_product float null,
-stock_product int not null,
-image_product varchar(100) not null,
-weight_product float not null,
-gramPrice_product float null,
-availability_product varchar(15) not null,
-fk_product_email_provider varchar (55), foreign key (fk_product_email_provider) references Provider(email_provider),
-fk_product_id_category varchar(4), foreign key (fk_product_id_category) references Category (id_category)
-)
-
-delimiter //
-create procedure insert_product(
-    in id_product_ varchar(15),
-    in name_product_ varchar(20),
-    in description_product_ varchar(80),
-    in unitprice_product_ float,
-    in suggestedprice_product_ float,
-    in stock_product_ int,
-    in image_product_ varchar(100),
-    in weight_product_ float,
-    in gramprice_product_ float,
-    in availability_product_ varchar(15),
-    in fk_product_email_provider_ varchar(55),
-    in fk_product_id_category_ varchar(4)
-)
-begin
-    declare existing_product int;
-	declare error_message varchar (255);
-    select count(*) into existing_product from product where id_product = p_id_product;
-    if existing_product = 0 then
-    
-    
-        insert into product values (
-            id_product_, name_product_, description_product_, unitprice_product_, suggestedprice_product_,
-            stock_product_, image_product_, weight_product_, gramprice_product_, availability_product_,
-            fk_product_email_provider_, fk_product_id_category_
-        );
-        select 'nuevo producto insertado correctamente' as message;
-    else
-      set error_message = 'Error inserting product, check the data';
-          signal sqlstate  '45000' set message_text = error_message ;
-    end if;
-end//
-
-delimiter ;
-
-select * from Product;
-
-Create table OrderDetail (
-discount varchar (50),
-Quantity int, 
-Subtotal float (10,2),
-fk_detail_cod_order int,
-fk_detail_id_product varchar (15),
-foreign key (fk_detail_cod_order) references Order_ (cod_order),
-foreign key (fk_detail_id_product) references Product (id_product)
-);
-=======
-call getGrocerEmailExist('lauravalentina@yahoo.com', @message_text);
-
 delimiter //
 
-
-
-create procedure getCompanyEmailExist (
-    in email_company_param varchar(55),
-    out message_text varchar(255)
-)
-begin
-    declare countCompany int;
-    declare error_message varchar(255);
-
-    select count(*) into countCompany from company where email_company = email_company_param;
-
-    if countCompany = 0 then
-        set error_message = 'error, does not exist';
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
-    else
-        set message_text = 'The company exists';
-    end if;
-
-    select message_text;
-end //
-
-delimiter ;
-
-call getCompanyEmailExist('colgate@gmail.com', @message_text);
-
-
-delimiter //
-
-create procedure updatePasswordCompany (
-    in email_company varchar (55),
-	in password_company varchar (100),
-    out message_text varchar(255)
-)
-begin
-    declare countCompany int;
-    declare error_message varchar(255);
-
-    select count(*) into countCompany from company where company.email_company = email_company;
-
-    if countCompany = 0 then
-        set error_message = 'error, does not exist';
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
-    else
-		update company set company.password_company = password_company where company.email_company = email_company;
-        set message_text = 'company password update successful';
-    end if;
-
-    select message_text;
-end //
-
-delimiter ;
-
-call updatePasswordCompany ('colgate@gmail.com', '1',@message_text);
-
-delimiter //
-
-create procedure updatePasswordGrocer (
+create procedure updatePassword_Grocer (
     in email_grocer varchar(55),
     in password_grocer varchar(100),
     out message_text varchar(255)
@@ -995,7 +476,12 @@ begin
     declare countGrocer int;
     declare error_message varchar(255);
 
-    select count(*) into countGrocer from grocer where grocer.email_grocer = email_grocer;
+SELECT 
+    COUNT(*)
+INTO countGrocer FROM
+    grocer
+WHERE
+    grocer.email_grocer = email_grocer;
 
     if countGrocer = 0 then
         set error_message = 'error, does not exist';
@@ -1005,10 +491,10 @@ begin
         set message_text = 'grocer password update successful';
     end if;
 
-    select message_text;
+SELECT message_text;
 end //
 
 delimiter ;
 
-call updatePasswordGrocer('lauravalentina@yahoo.com','1', @message_text);
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
 

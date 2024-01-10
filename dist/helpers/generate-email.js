@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailConfirmation = exports.generateEmail = void 0;
+exports.generateWelcomeEmail = exports.emailConfirmation = exports.generateEmail = void 0;
 const nodemailer = require('nodemailer');
 const generateEmail = (token, email, req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -79,3 +79,50 @@ const emailConfirmation = (email, req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.emailConfirmation = emailConfirmation;
+const generateWelcomeEmail = (email, username, req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (email) {
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL,
+                    pass: process.env.KEY_EMAIL
+                }
+            });
+            const mailOptions = {
+                from: process.env.EMAIL,
+                to: email,
+                subject: 'Bienvenido a ProveerTen',
+                html: `
+                    <p>¡Hola ${username}!</p>
+                    <p>Bienvenido a nuestra plataforma. Agradecemos tu registro y esperamos que disfrutes de nuestros servicios.</p>
+                    <p>Gracias,</p>
+                    <p>Equipo de la Plataforma</p>
+                `
+            };
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error al enviar el correo:', error);
+                    return res.status(500).json({ message: 'Error al enviar el correo' });
+                }
+                else {
+                    console.log('Correo electrónico enviado:', info.response);
+                    return res.status(200).json({ message: 'Correo electrónico enviado correctamente' });
+                }
+            });
+        }
+    }
+    catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ message: 'Error interno del servidor' });
+    }
+});
+exports.generateWelcomeEmail = generateWelcomeEmail;
+// export const generateWelcomeEmail = (username: string) => {
+//     return `
+//     <p>¡Hola ${username}!</p>
+//         <p>Bienvenido a nuestra plataforma. Agradecemos tu registro y esperamos que disfrutes de nuestros servicios.</p>
+//         <p>Gracias,</p>
+//         <p>Equipo de la Plataforma</p>
+//     `;
+// };
