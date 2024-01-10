@@ -6,6 +6,7 @@ import Grocer from '../models/Grocer';
 import Company from '../models/Company';
 
 import register from '../services/register';
+import { generateWelcomeEmail } from '../helpers/generate-email';
 
 export const company = async (req: Request, res: Response) => {
 
@@ -39,6 +40,7 @@ export const company = async (req: Request, res: Response) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
+                generateWelcomeEmail(data.email_company, data.name_company, req, res);
                 res.status(200).json({ "Status": result[0][0].message_text });
             }
         })
@@ -91,6 +93,7 @@ export const provider = async (req: Request, res: Response) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
+                generateWelcomeEmail(data.email_provider, data.name_provider, req, res);
                 res.status(200).json({ "Status": result[0][0].message_text });
             }
         });
@@ -146,6 +149,7 @@ export const grocer = async (req: Request, res: Response) => {
             if (error) {
                 res.status(500).json({ "error": error.message });
             } else {
+                generateWelcomeEmail(data.email_grocer, data.name_grocer, req, res);
                 res.status(200).json({ "Status": result[0][0].message_text });
             }
         })
