@@ -13,36 +13,130 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePassword = exports.verifyCompany = exports.verifyGrocer = void 0;
-const db_config_1 = __importDefault(require("../config/db-config"));
+//import connection from "../config/db-config";
 const bcrypt_1 = __importDefault(require("bcrypt"));
+/*
+
+export const verifyGrocer = (emailGrocer: any, callback: any) => {
+  const grocerExisting = "call getGrocerEmailExist(?,@message_text);";
+  try {
+    connection.query(
+      grocerExisting,
+      emailGrocer,
+      (error: any, results: any) => {
+        if (error) {
+          return callback(error);
+        }
+        callback(null, results);
+      }
+    );
+  } catch (error) {
+    return callback(error);
+  }
+};
+
+export const verifyCompany = (emailProvider: any, callback: any) => {
+  const providerExisting = "call getCompany_EmailExist (?,@message_text);";
+  try {
+    connection.query(
+      providerExisting,
+      emailProvider,
+      (error: any, result: any) => {
+        if (error) {
+          return callback(error);
+        }
+        callback(null, result);
+      }
+    );
+  } catch (error) {
+    return callback(error);
+  }
+};
+
+export const updatePassword = async (
+  email: any,
+  role: any,
+  password: any,
+  callback: any
+) => {
+  const password_hash = await bcrypt.hash(password, 10);
+
+  const data: { email: string; password: string }[] = [
+    { email: email, password: password_hash },
+  ];
+
+  const updatePasswordGrocer = "call updatePassword_Grocer(?,?,@message_text);";
+  const updatePasswordCompany = "call updatePasswordCompany(?,?,@message_text);";
+  try {
+    if (role == "grocer") {
+      connection.query(
+        updatePasswordGrocer,
+        [email, password_hash],
+        (error: any, result: any) => {
+          if (error) {
+            return callback(error);
+          }
+          callback(null, result);
+        }
+      );
+    } else {
+      connection.query(
+        updatePasswordCompany,
+        [email, password_hash],
+        (error: any, result: any) => {
+          if (error) {
+            return callback(error);
+          }
+          callback(null, result);
+        }
+      );
+    }
+  } catch (error) {
+    return callback(error);
+  }
+};
+*/
+const db_config_1 = __importDefault(require("../config/db-config"));
 const verifyGrocer = (emailGrocer, callback) => {
-    const grocerExisting = "call getGrocerEmailExist(?,@message_text);";
-    try {
-        db_config_1.default.query(grocerExisting, emailGrocer, (error, results) => {
-            if (error) {
-                return callback(error);
-            }
-            callback(null, results);
-        });
-    }
-    catch (error) {
-        return callback(error);
-    }
+    db_config_1.default.getConnection((err, connection) => {
+        if (err) {
+            return callback(err);
+        }
+        const grocerExisting = "call getGrocerEmailExist(?,@message_text);";
+        try {
+            connection.query(grocerExisting, emailGrocer, (error, results) => {
+                connection.release();
+                if (error) {
+                    return callback(error);
+                }
+                callback(null, results);
+            });
+        }
+        catch (error) {
+            return callback(error);
+        }
+    });
 };
 exports.verifyGrocer = verifyGrocer;
 const verifyCompany = (emailProvider, callback) => {
-    const providerExisting = "call getCompany_EmailExist (?,@message_text);";
-    try {
-        db_config_1.default.query(providerExisting, emailProvider, (error, result) => {
-            if (error) {
-                return callback(error);
-            }
-            callback(null, result);
-        });
-    }
-    catch (error) {
-        return callback(error);
-    }
+    db_config_1.default.getConnection((err, connection) => {
+        if (err) {
+            return callback(err);
+        }
+        const providerExisting = "call getCompany_EmailExist (?,@message_text);";
+        try {
+            connection.query(providerExisting, emailProvider, (error, result) => {
+                connection.release();
+                if (error) {
+                    return callback(error);
+                }
+                callback(null, result);
+            });
+        }
+        catch (error) {
+            return callback(error);
+        }
+    });
 };
 exports.verifyCompany = verifyCompany;
 const updatePassword = (email, role, password, callback) => __awaiter(void 0, void 0, void 0, function* () {
@@ -50,28 +144,35 @@ const updatePassword = (email, role, password, callback) => __awaiter(void 0, vo
     const data = [
         { email: email, password: password_hash },
     ];
-    const updatePasswordGrocer = "call updatePassword_Grocer(?,?,@message_text);";
-    const updatePasswordCompany = "call updatePasswordCompany(?,?,@message_text);";
-    try {
-        if (role == "grocer") {
-            db_config_1.default.query(updatePasswordGrocer, [email, password_hash], (error, result) => {
-                if (error) {
-                    return callback(error);
-                }
-                callback(null, result);
-            });
+    db_config_1.default.getConnection((err, connection) => {
+        if (err) {
+            return callback(err);
         }
-        else {
-            db_config_1.default.query(updatePasswordCompany, [email, password_hash], (error, result) => {
-                if (error) {
-                    return callback(error);
-                }
-                callback(null, result);
-            });
+        const updatePasswordGrocer = "call updatePassword_Grocer(?,?,@message_text);";
+        const updatePasswordCompany = "call updatePasswordCompany(?,?,@message_text);";
+        try {
+            if (role == "grocer") {
+                connection.query(updatePasswordGrocer, [email, password_hash], (error, result) => {
+                    connection.release();
+                    if (error) {
+                        return callback(error);
+                    }
+                    callback(null, result);
+                });
+            }
+            else {
+                connection.query(updatePasswordCompany, [email, password_hash], (error, result) => {
+                    connection.release();
+                    if (error) {
+                        return callback(error);
+                    }
+                    callback(null, result);
+                });
+            }
         }
-    }
-    catch (error) {
-        return callback(error);
-    }
+        catch (error) {
+            return callback(error);
+        }
+    });
 });
 exports.updatePassword = updatePassword;

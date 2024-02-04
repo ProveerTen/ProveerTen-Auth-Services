@@ -46,7 +46,7 @@ class Server {
 
 
         // Cors
-        this.app.use(cors({ credentials: true, origin: 'http://localhost:4200' }));
+        this.app.use(cors({ credentials: true, origin:'*'}));
     }
 
     routes() {
@@ -57,6 +57,8 @@ class Server {
         this.app.use('/login', login);
 
         this.app.use('/register', register);
+
+        this.app.use('/get', register);
 
 
     }

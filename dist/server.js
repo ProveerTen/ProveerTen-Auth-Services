@@ -45,6 +45,7 @@ class Server {
         this.app.use('/reset', reset_password_1.default);
         this.app.use('/login', login_1.default);
         this.app.use('/register', register_1.default);
+        this.app.use('/get', register_1.default);
     }
 }
 exports.default = Server;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.grocer = exports.provider = exports.company = void 0;
+exports.hello = exports.grocer = exports.provider = exports.company = void 0;
 const generate_token_1 = __importDefault(require("../helpers/generate-token"));
 const login_1 = __importDefault(require("../services/login"));
 const company = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29,7 +29,7 @@ const company = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             else {
                 if (verifiedPassword) {
                     let secretKey = process.env.SECRET_KEY;
-                    let token = (0, generate_token_1.default)({ role: _role, email: email_company, id: id_company }, secretKey, new Date().getTime() + (2 * 60 * 1000));
+                    let token = (0, generate_token_1.default)({ role: _role, email: email_company, id: id_company }, secretKey, '30d');
                     return res.status(200).json({ status: 'Successful authentication', token: token });
                 }
                 else {
@@ -60,7 +60,7 @@ const provider = (req, res) => {
             else {
                 if (verifiedPassword) {
                     let secretKey = process.env.SECRET_KEY;
-                    let token = (0, generate_token_1.default)({ role: _role, email: email_provider, id: id_provider }, secretKey, new Date().getTime() + (2 * 60 * 1000));
+                    let token = (0, generate_token_1.default)({ role: _role, email: email_provider, id: id_provider }, secretKey, '30d');
                     return res.status(200).json({ status: 'Successful authentication', token: token });
                 }
                 else {
@@ -91,7 +91,7 @@ const grocer = (req, res) => {
             else {
                 if (verifiedPassword) {
                     let secretKey = process.env.SECRET_KEY;
-                    let token = (0, generate_token_1.default)({ role: _role, email: email_grocer, id: id_grocer }, secretKey, new Date().getTime() + (2 * 60 * 1000));
+                    let token = (0, generate_token_1.default)({ role: _role, email: email_grocer, id: id_grocer }, secretKey, '30d');
                     return res.status(200).json({ status: 'Successful authentication', token: token });
                 }
                 else {
@@ -108,3 +108,7 @@ const grocer = (req, res) => {
     }
 };
 exports.grocer = grocer;
+const hello = (req, res) => {
+    res.send("Hello titi");
+};
+exports.hello = hello;

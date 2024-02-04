@@ -67,10 +67,10 @@ export const resetPassword = async (req: Request, res: Response) => {
     let secret_key: any = process.env.SECRET_KEY;
 
     try {
-
-        const decoded = jwt.verify(token, secret_key);
-        const expirationTimeInSeconds: number = decoded.exp;
-        console.log(decoded.exp);
+      /*
+        //const decoded = jwt.verify(token, secret_key);
+        //const expirationTimeInSeconds: number = decoded.exp;
+       // console.log(decoded.exp);
         
       const currentTimeInSeconds: number = Math.floor(Date.now() / 1000);
         //const exp: any = decoded;
@@ -79,9 +79,9 @@ export const resetPassword = async (req: Request, res: Response) => {
         if (expirationTimeInSeconds < currentTimeInSeconds) {
           console.log("Token expirado");
           return res.status(400).json({ message: "El token ha expirado" });
-        /* if (expirationDate < new Date()) {
+         if (expirationDate < new Date()) {
             console.log("Token expirado");    
-            return res.status(400).json({ message: "El token ha expirado" });*/
+            return res.status(400).json({ message: "El token ha expirado" });
             
         } else {
             let { email }: any = decoded;
@@ -100,6 +100,7 @@ export const resetPassword = async (req: Request, res: Response) => {
                 } 
             });
         }
+        */
     } catch (err) {
         return res.status(500).json({
             error: err,
