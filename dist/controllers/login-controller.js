@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.hello = exports.grocer = exports.provider = exports.company = void 0;
+exports.grocer = exports.provider = exports.company = void 0;
 const generate_token_1 = __importDefault(require("../helpers/generate-token"));
 const login_1 = __importDefault(require("../services/login"));
 const company = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -24,7 +24,12 @@ const company = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         };
         login_1.default.loginCompany(data, (error, verifiedPassword, id_company, _role) => {
             if (error) {
-                res.status(500).json({ "error": error.message });
+                if (error.sqlState === '45000') {
+                    res.status(409).json({ "error": error.message });
+                }
+                else {
+                    res.status(500).json({ "error": error.message });
+                }
             }
             else {
                 if (verifiedPassword) {
@@ -40,7 +45,7 @@ const company = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(400).json({
             error: `failed to login`
         });
     }
@@ -55,7 +60,12 @@ const provider = (req, res) => {
         };
         login_1.default.loginProvider(data, (error, verifiedPassword, id_provider, _role) => {
             if (error) {
-                res.status(500).json({ "error": error.message });
+                if (error.sqlState === '45000') {
+                    res.status(409).json({ "error": error.message });
+                }
+                else {
+                    res.status(500).json({ "error": error.message });
+                }
             }
             else {
                 if (verifiedPassword) {
@@ -71,7 +81,7 @@ const provider = (req, res) => {
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(400).json({
             error: `failed to login`
         });
     }
@@ -86,7 +96,12 @@ const grocer = (req, res) => {
         };
         login_1.default.loginGrocer(data, (error, verifiedPassword, id_grocer, _role) => {
             if (error) {
-                res.status(500).json({ "error": error.message });
+                if (error.sqlState === '45000') {
+                    res.status(409).json({ "error": error.message });
+                }
+                else {
+                    res.status(500).json({ "error": error.message });
+                }
             }
             else {
                 if (verifiedPassword) {
@@ -102,13 +117,9 @@ const grocer = (req, res) => {
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(400).json({
             error: `failed to login`
         });
     }
 };
 exports.grocer = grocer;
-const hello = (req, res) => {
-    res.send("Hello titi");
-};
-exports.hello = hello;

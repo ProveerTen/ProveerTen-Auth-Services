@@ -12,8 +12,15 @@ export const company = async (req: Request, res: Response) => {
         }
 
         login.loginCompany(data, (error: any, verifiedPassword: any, id_company: string, _role: string) => {
+
             if (error) {
-                res.status(500).json({ "error": error.message });
+
+                if (error.sqlState === '45000') {
+                    res.status(409).json({ "error": error.message });
+                } else {
+                    res.status(500).json({ "error": error.message });
+                }
+
             } else {
                 if (verifiedPassword) {
                     let secretKey: any = process.env.SECRET_KEY;
@@ -29,7 +36,7 @@ export const company = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(400).json({
             error: `failed to login`
         });
     }
@@ -48,7 +55,11 @@ export const provider = (req: Request, res: Response) => {
 
         login.loginProvider(data, (error: any, verifiedPassword: any, id_provider: string, _role: string) => {
             if (error) {
-                res.status(500).json({ "error": error.message });
+                if (error.sqlState === '45000') {
+                    res.status(409).json({ "error": error.message });
+                } else {
+                    res.status(500).json({ "error": error.message });
+                }
             } else {
                 if (verifiedPassword) {
                     let secretKey: any = process.env.SECRET_KEY;
@@ -64,7 +75,7 @@ export const provider = (req: Request, res: Response) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(400).json({
             error: `failed to login`
         });
     }
@@ -81,8 +92,13 @@ export const grocer = (req: Request, res: Response) => {
         }
 
         login.loginGrocer(data, (error: any, verifiedPassword: any, id_grocer: string, _role: string) => {
+
             if (error) {
-                res.status(500).json({ "error": error.message });
+                if (error.sqlState === '45000') {
+                    res.status(409).json({ "error": error.message });
+                } else {
+                    res.status(500).json({ "error": error.message });
+                }
             } else {
                 if (verifiedPassword) {
                     let secretKey: any = process.env.SECRET_KEY;
@@ -91,19 +107,17 @@ export const grocer = (req: Request, res: Response) => {
                         secretKey, '30d'
                     )
                     return res.status(200).json({ status: 'Successful authentication', token: token });
+
                 } else {
                     return res.status(401).json({ Status: 'Incorrect credentials' });
+
                 }
             }
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(400).json({
             error: `failed to login`
         });
     }
 };
-
-export const hello = (req: Request, res: Response) => {
-    res.send("Hello titi")
-}

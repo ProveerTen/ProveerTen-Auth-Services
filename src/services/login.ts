@@ -78,7 +78,6 @@ const loginCompany = (data: any, callback: any) => {
 
         const getCompanyQuery = 'call get_data_company(?);';
 
-
         try {
             connection.query(getCompanyQuery, [data.email_company], (error: any, results: any) => {
                 connection.release();

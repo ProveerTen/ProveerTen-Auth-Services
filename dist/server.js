@@ -38,7 +38,6 @@ class Server {
         // Body Parser
         // Parseo body
         this.app.use(express_1.default.json());
-        // Cors
         this.app.use((0, cors_1.default)({ credentials: true, origin: 'http://localhost:4200' }));
     }
     routes() {

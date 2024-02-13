@@ -10,5 +10,4 @@ const router = (0, express_1.Router)();
 router.post('/company', login_validator_1.default.params('email_company', 'password_company'), login_validator_1.default.validatorParams, login_controller_1.company);
 router.post('/provider', login_validator_1.default.params('email_provider', 'password_provider'), login_validator_1.default.validatorParams, login_controller_1.provider);
 router.post('/grocer', login_validator_1.default.params('email_grocer', 'password_grocer'), login_validator_1.default.validatorParams, login_controller_1.grocer);
-router.get('/test', login_controller_1.hello);
 exports.default = router;

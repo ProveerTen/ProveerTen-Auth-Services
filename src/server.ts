@@ -38,15 +38,13 @@ class Server {
               tokens.res(req, res, 'content-length'), '-',
               tokens['response-time'](req, res), 'ms'
             ].join(' ');
-          }));
+        }));
+        
         // Body Parser
         // Parseo body
-
         this.app.use(express.json());
+        this.app.use(cors({ credentials: true, origin: 'http://localhost:4200' }));
 
-
-        // Cors
-        this.app.use(cors({ credentials: true, origin:'*'}));
     }
 
     routes() {

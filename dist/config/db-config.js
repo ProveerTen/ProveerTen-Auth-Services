@@ -6,23 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mysql2_1 = __importDefault(require("mysql2"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-/*
-const connection = mysql.createConnection({
-    host: process.env.HOST,
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE
-});
-
-connection.connect((error) => {
-    if (error) {
-        console.error(`Error connecting to the database "${process.env.DATABASE}"`, error);
-    } else {
-        console.log(`Connection established with the database "${process.env.DATABASE}"`);
-    }
-});
-*/
-/* export default connection;*/
 const pool = mysql2_1.default.createPool({
     connectionLimit: 10,
     host: process.env.HOST,
@@ -36,6 +19,6 @@ pool.getConnection((error, connection) => {
         return;
     }
     console.log(`Connection established with the database "${process.env.DATABASE}"`);
-    connection.release(); // Libera la conexión de prueba
+    connection.release();
 });
 exports.default = pool;

@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-
 import Provider from '../models/Provider';
 import Grocer from '../models/Grocer';
 import Company from '../models/Company';
-
 import register from '../services/register';
 import { generateWelcomeEmail } from '../helpers/generate-email';
 
@@ -38,7 +36,11 @@ export const company = async (req: Request, res: Response) => {
         };
         register.registerCompany(data, (error: any, result: any) => {
             if (error) {
-                res.status(500).json({ "error": error.message });
+                if (error.sqlState === '45000') {
+                    res.status(409).json({ "error": error.message });
+                } else {
+                    res.status(500).json({ "error": error.message });
+                }
             } else {
                 generateWelcomeEmail(data.email_company, data.name_company, req, res);
                 res.status(200).json({ "Status": result[0][0].message_text });
@@ -46,7 +48,7 @@ export const company = async (req: Request, res: Response) => {
         })
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(400).json({
             error: error,
             message: `error registering company`
         });
@@ -91,7 +93,11 @@ export const provider = async (req: Request, res: Response) => {
 
         register.registerProvider(data, (error: any, result: any) => {
             if (error) {
-                res.status(500).json({ "error": error.message });
+                if (error.sqlState === '45000') {
+                    res.status(409).json({ "error": error.message });
+                } else {
+                    res.status(500).json({ "error": error.message });
+                }
             } else {
                 generateWelcomeEmail(data.email_provider, data.name_provider, req, res);
                 res.status(200).json({ "Status": result[0][0].message_text });
@@ -100,7 +106,7 @@ export const provider = async (req: Request, res: Response) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(400).json({
             error: error,
             message: `error registering provider`
         });
@@ -148,7 +154,13 @@ export const grocer = async (req: Request, res: Response) => {
 
         register.registerGrocer(data, (error: any, result: any) => {
             if (error) {
-                res.status(500).json({ "error": error.message });
+
+                if (error.sqlState === '45000') {
+                    res.status(409).json({ "error": error.message });
+                } else {
+                    res.status(500).json({ "error": error.message });
+                }
+                
             } else {
                 generateWelcomeEmail(data.email_grocer, data.name_grocer, req, res);
                 res.status(200).json({ "Status": result[0][0].message_text });
@@ -156,7 +168,7 @@ export const grocer = async (req: Request, res: Response) => {
         })
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.status(400).json({
             error: error,
             message: `error registering grocer`
         });
