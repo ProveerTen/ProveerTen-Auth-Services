@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetPassword = exports.resetPasswordCompany = exports.resetPasswordGrocer = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const reset_password_service_1 = require("../services/reset-password-service");
 const generate_token_1 = __importDefault(require("../helpers/generate-token"));
 const generate_email_1 = require("../helpers/generate-email");
@@ -61,40 +62,33 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const token = req.params.t;
     let secret_key = process.env.SECRET_KEY;
     try {
-        /*
-          //const decoded = jwt.verify(token, secret_key);
-          //const expirationTimeInSeconds: number = decoded.exp;
-         // console.log(decoded.exp);
-          
-        const currentTimeInSeconds: number = Math.floor(Date.now() / 1000);
-          //const exp: any = decoded;
-          //const expirationDate = new Date(exp * 1000);
-  
-          if (expirationTimeInSeconds < currentTimeInSeconds) {
-            console.log("Token expirado");
-            return res.status(400).json({ message: "El token ha expirado" });
-           if (expirationDate < new Date()) {
-              console.log("Token expirado");
-              return res.status(400).json({ message: "El token ha expirado" });
-              
-          } else {
-              let { email }: any = decoded;
-              let { role }: any = decoded;
-              let password = req.body.password;
-  
-              updatePassword(email, role, password, (error: any, result: any) => {
-                  if (error) {
-                      return res.status(500).json({ error: error.message });
-                  }
-                  else{
-                      emailConfirmation (email,req,res);
-                      console.log("Correo enviado exitodamente");
-                      
-                      return res.status(200).json({ message: result[0][0].message_text });
-                  }
-              });
-          }
-          */
+        const decoded = jsonwebtoken_1.default.verify(token, secret_key);
+        const expirationTimeInSeconds = decoded.exp;
+        console.log(decoded);
+        const timestamp = decoded.exp / 1000;
+        const fecha = new Date(timestamp * 1000);
+        console.log("Fecha normal:", fecha.toUTCString());
+        // const currentTimeInSeconds: number = Math.floor(Date.now() / 1000);
+        //   const exp: any = decoded;
+        //   const expirationDate = new Date(exp * 1000);
+        // if (expirationTimeInSeconds < currentTimeInSeconds) {
+        //  if (expirationDate < new Date()) {
+        //     console.log("Token expirado");    
+        //     return res.status(400).json({ message: "El token ha expirado" });
+        // } else {
+        let { email } = decoded;
+        let { role } = decoded;
+        let password = req.body.password;
+        (0, reset_password_service_1.updatePassword)(email, role, password, (error, result) => {
+            if (error) {
+                return res.status(500).json({ error: error.message });
+            }
+            else {
+                (0, generate_email_1.emailConfirmation)(email, req, res);
+                console.log("Correo enviado exitodamente");
+                return res.status(200).json({ message: result[0][0].message_text });
+            }
+        });
     }
     catch (err) {
         return res.status(500).json({

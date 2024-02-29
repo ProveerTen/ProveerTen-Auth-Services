@@ -84,6 +84,7 @@ export const updatePassword = async (
 */
 
 import pool from '../config/db-config';
+import { log } from "console";
 
 export const verifyGrocer = (emailGrocer: any, callback: any) => {
 
@@ -138,6 +139,7 @@ export const verifyCompany = (emailProvider: any, callback: any) => {
 
 export const updatePassword = async (email: any, role: any, password: any, callback: any) => {
 
+    console.log ("ENTRS")
   const password_hash = await bcrypt.hash(password, 10);
 
   const data: { email: string; password: string }[] = [

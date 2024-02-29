@@ -34,7 +34,7 @@ const generateEmail = (token, email, req, res) => __awaiter(void 0, void 0, void
                 }
                 else {
                     console.log('Correo electrónico enviado:', info.response);
-                    return res.status(200).json({ message: 'Correo electrónico enviado correctamente' });
+                    return res.status(200).json({ message: `Correo electrónico enviado correctamente a ${email}` });
                 }
             });
         }

@@ -67,23 +67,31 @@ export const resetPassword = async (req: Request, res: Response) => {
     let secret_key: any = process.env.SECRET_KEY;
 
     try {
-      /*
-        //const decoded = jwt.verify(token, secret_key);
-        //const expirationTimeInSeconds: number = decoded.exp;
-       // console.log(decoded.exp);
-        
-      const currentTimeInSeconds: number = Math.floor(Date.now() / 1000);
-        //const exp: any = decoded;
-        //const expirationDate = new Date(exp * 1000);
+      
+        const decoded:any = jwt.verify(token, secret_key);
+        const expirationTimeInSeconds: number = decoded.exp;
+       console.log(decoded);
 
-        if (expirationTimeInSeconds < currentTimeInSeconds) {
-          console.log("Token expirado");
-          return res.status(400).json({ message: "El token ha expirado" });
-         if (expirationDate < new Date()) {
-            console.log("Token expirado");    
-            return res.status(400).json({ message: "El token ha expirado" });
+       const timestamp: number = decoded.exp  / 1000; 
+       const fecha: Date = new Date(timestamp * 1000); 
+       console.log("Fecha normal:", fecha.toUTCString());
+        
+      // const currentTimeInSeconds: number = Math.floor(Date.now() / 1000);
+      //   const exp: any = decoded;
+      //   const expirationDate = new Date(exp * 1000);
+
+        // if (expirationTimeInSeconds < currentTimeInSeconds) {
+
+        //  if (expirationDate < new Date()) {
+        //     console.log("Token expirado");    
+        //     return res.status(400).json({ message: "El token ha expirado" });
             
-        } else {
+        // } else {
+
+
+       
+
+
             let { email }: any = decoded;
             let { role }: any = decoded;
             let password = req.body.password;
@@ -99,8 +107,8 @@ export const resetPassword = async (req: Request, res: Response) => {
                     return res.status(200).json({ message: result[0][0].message_text });
                 } 
             });
-        }
-        */
+        
+        
     } catch (err) {
         return res.status(500).json({
             error: err,

@@ -25,7 +25,7 @@ export const generateEmail = async (token: any, email: any, req: Request, res: R
                     return res.status(500).json({ message: 'Error al enviar el correo' });
                 } else {
                     console.log('Correo electrónico enviado:', info.response);
-                    return res.status(200).json({ message: 'Correo electrónico enviado correctamente' });
+                    return res.status(200).json({ message: `Correo electrónico enviado correctamente a ${email}` });
                 }
             });
         }

@@ -140,6 +140,7 @@ const verifyCompany = (emailProvider, callback) => {
 };
 exports.verifyCompany = verifyCompany;
 const updatePassword = (email, role, password, callback) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("ENTRS");
     const password_hash = yield bcrypt_1.default.hash(password, 10);
     const data = [
         { email: email, password: password_hash },
