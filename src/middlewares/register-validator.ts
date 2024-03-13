@@ -13,7 +13,6 @@ let paramsCompany: any = [
 
 
 let paramsProvider: any = [
-    check('document_provider').isLength({ min: 7, max: 10 }),
     check('name_provider').isLength({ min: 1, max: 50 }),
     check('last_name_provider').isLength({ min: 1, max: 40 }),
     check('email_provider').isEmail(),
@@ -23,6 +22,7 @@ let paramsProvider: any = [
     check('neighborhood').isLength({ min: 1, max: 40 }),
     check('street').isLength({ min: 1, max: 30 }),
     check('number_street').isLength({ min: 1, max: 25 }),
+    check('department').isLength({ min: 1, max: 25 }),
     check('number_provider').isLength({ min: 1, max: 15 }),
 ];
 
@@ -38,7 +38,7 @@ let paramsGrocer: any = [
     check('neighborhood').isLength({ min: 4, max: 40 }),
     check('street').isLength({ min: 1, max: 30 }),
     check('number_street').isLength({ min: 1, max: 25 }),
-    check('apartment').isLength({ min: 1, max: 25 }),
+    check('department').isLength({ min: 1, max: 25 }),
     check('number_grocer').isLength({ min: 1, max: 15 }),
 ];
 

@@ -9,6 +9,7 @@ export default interface Provider {
     city_provider:string,
     neighborhood:string,
     street:string,
-    number_street:string,
+    number_street: string,
+    department:string,
     number_provider:string
 }

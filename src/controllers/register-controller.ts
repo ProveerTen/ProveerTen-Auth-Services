@@ -3,8 +3,9 @@ import bcrypt from 'bcrypt';
 import Provider from '../models/Provider';
 import Grocer from '../models/Grocer';
 import Company from '../models/Company';
-import register from '../services/register';
+import register, { get_name_company } from '../services/register';
 import { generateWelcomeEmail } from '../helpers/generate-email';
+import { v4 as uuidv4 } from 'uuid';
 
 export const company = async (req: Request, res: Response) => {
 
@@ -59,7 +60,6 @@ export const company = async (req: Request, res: Response) => {
 export const provider = async (req: Request, res: Response) => {
     try {
         const {
-            document_provider,
             name_provider,
             last_name_provider,
             email_provider,
@@ -70,11 +70,13 @@ export const provider = async (req: Request, res: Response) => {
             neighborhood,
             street,
             number_street,
+            department,
             number_provider
         } = req.body;
 
         const password_hash = await bcrypt.hash(password_provider, 10);
-
+        let name_company = await get_name_company(nit_company);
+        const document_provider = name_company.replace(/\s/g, '_') + '_' + uuidv4();
 
         const data: Provider = {
             document_provider,
@@ -88,6 +90,7 @@ export const provider = async (req: Request, res: Response) => {
             neighborhood,
             street,
             number_street,
+            department,
             number_provider
         };
 
@@ -129,7 +132,7 @@ export const grocer = async (req: Request, res: Response) => {
             neighborhood,
             street,
             number_street,
-            apartment,
+            department,
             number_grocer
         } = req.body;
 
@@ -148,7 +151,7 @@ export const grocer = async (req: Request, res: Response) => {
             neighborhood,
             street,
             number_street,
-            apartment,
+            department,
             number_grocer
         };
 

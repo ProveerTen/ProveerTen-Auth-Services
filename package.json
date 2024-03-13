@@ -7,7 +7,7 @@
     "test": "echo Error: no test specified",
     "dev": "nodemon dist/index.js",
     "super": "supervisor dist/index.js",
-    "build" : "tsc",
+    "build": "tsc",
     "start": "node dist/index.js"
   },
   "author": "",
@@ -26,12 +26,14 @@
     "morgan": "^1.10.0",
     "mysql2": "^3.6.3",
     "nodemailer": "^6.9.8",
-    "secure-random": "^1.1.2"
+    "secure-random": "^1.1.2",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.16",
     "@types/express": "^4.17.21",
-    "@types/jsonwebtoken": "^9.0.5"
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/uuid": "^9.0.8"
   }
 }

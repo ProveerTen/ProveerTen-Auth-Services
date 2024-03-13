@@ -11,6 +11,6 @@ export default interface Grocer {
     neighborhood:string,
     street:string,
     number_street:string,
-    apartment:string,
+    department:string,
     number_grocer:string
 }
