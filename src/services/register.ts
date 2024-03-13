@@ -63,7 +63,7 @@ const registerGrocer = (data: Grocer, callback: any) => {
             return callback(err);
         }
 
-    const procInsertGrocerQuery = 'call insertGrocer(?,?,?,?,?,?,?,?,?,"grocer",?,?,?,?,?,?,@message_text);';
+    const procInsertGrocerQuery = 'call insertGrocer(?,?,?,?,?,?,?,?,?,"grocer",?,?,?,?,?,@message_text);';
     try {
         connection.query(procInsertGrocerQuery, [data.document_grocer, data.name_grocer, data.last_name_grocer, data.email_grocer,
         data.name_store, data.profile_photo_grocer, data.cover_photo_grocer, data.city_grocer, data.password_grocer, data.neighborhood,
