@@ -5,7 +5,6 @@ dotenv.config();
 
 
 const pool = mysql.createPool({
-    connectionLimit: 10,
     host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
@@ -15,6 +14,7 @@ const pool = mysql.createPool({
 pool.getConnection((error, connection) => {
     if (error) {
         console.error(`Error connecting to the database "${process.env.DATABASE}"`, error);
+        console.log(error);
         return;
     }
     console.log(`Connection established with the database "${process.env.DATABASE}"`);
