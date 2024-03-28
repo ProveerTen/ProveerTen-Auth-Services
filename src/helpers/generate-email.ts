@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 export const generateEmail = async (token: any, email: any, req: Request, res: Response) => {
     try {
@@ -79,7 +79,6 @@ export const generateWelcomeEmail = async (email: string, username: string) => {
                 }
             });
             const mailOptions = {
-
                 from: process.env.EMAIL,
                 to: email,
                 subject: 'Bienvenido a ProveerTen',
