@@ -7,7 +7,6 @@ const mysql2_1 = __importDefault(require("mysql2"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const pool = mysql2_1.default.createPool({
-    connectionLimit: 10,
     host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
@@ -16,6 +15,7 @@ const pool = mysql2_1.default.createPool({
 pool.getConnection((error, connection) => {
     if (error) {
         console.error(`Error connecting to the database "${process.env.DATABASE}"`, error);
+        console.log(error);
         return;
     }
     console.log(`Connection established with the database "${process.env.DATABASE}"`);

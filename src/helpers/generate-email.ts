@@ -12,7 +12,6 @@ export const generateEmail = async (token: any, email: any, req: Request, res: R
                 }
             });
             const mailOptions = {
-
                 from: process.env.EMAIL,
                 to: email,
                 subject: 'Recuperación de contraseña',
@@ -69,7 +68,7 @@ export const emailConfirmation = async (email: any, req: Request, res: Response)
     }
 }
 
-export const generateWelcomeEmail = async (email: string, username: string, req: any, res: any) => {
+export const generateWelcomeEmail = async (email: string, username: string) => {
     try {
         if (email) {
             const transporter = nodemailer.createTransport({
@@ -95,15 +94,13 @@ export const generateWelcomeEmail = async (email: string, username: string, req:
             transporter.sendMail(mailOptions, (error: any, info: any) => {
                 if (error) {
                     console.error('Error al enviar el correo:', error);
-                    return res.status(500).json({ message: 'Error al enviar el correo' });
                 } else {
                     console.log('Correo electrónico enviado:', info.response);
-                    return res.status(200).json({ message: 'Correo electrónico enviado correctamente' });
+
                 }
             });
         }
     } catch (error) {
         console.error('Error:', error);
-        return res.status(500).json({ message: 'Error interno del servidor' });
     }
 }

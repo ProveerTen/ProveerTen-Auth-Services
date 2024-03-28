@@ -79,7 +79,7 @@ const emailConfirmation = (email, req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.emailConfirmation = emailConfirmation;
-const generateWelcomeEmail = (email, username, req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const generateWelcomeEmail = (email, username) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (email) {
             const transporter = nodemailer.createTransport({
@@ -103,18 +103,15 @@ const generateWelcomeEmail = (email, username, req, res) => __awaiter(void 0, vo
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.error('Error al enviar el correo:', error);
-                    return res.status(500).json({ message: 'Error al enviar el correo' });
                 }
                 else {
                     console.log('Correo electrónico enviado:', info.response);
-                    return res.status(200).json({ message: 'Correo electrónico enviado correctamente' });
                 }
             });
         }
     }
     catch (error) {
         console.error('Error:', error);
-        return res.status(500).json({ message: 'Error interno del servidor' });
     }
 });
 exports.generateWelcomeEmail = generateWelcomeEmail;
