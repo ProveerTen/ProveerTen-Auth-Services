@@ -140,10 +140,37 @@ const loginGoogleGrocer = (data: any, callback: any) => {
     });
 }
 
+const loginGoogleProvider = (data: any, callback: any) => {
+
+    pool.getConnection((err, connection) => {
+        if (err) {
+            return callback(err);
+        }
+        const getProviderQuery = 'call get_data_provider(?);';
+
+        try {
+            connection.query(getProviderQuery, [data.email_provider], (error: any, results: any) => {
+                connection.release();
+                if (error) {
+                    return callback(error);
+                }
+                let idProvider: string = results[0][0].document_provider;
+                let role: string = results[0][0].fk_name_rol;
+                callback(null, idProvider, role);
+            });
+        } catch (error) {
+            return callback(error);
+        }
+    });
+}
+
+
+
 export default {
     loginCompany,
     loginProvider,
     loginGrocer,
     loginGoogleGrocer,
-    loginGoogleCompany
+    loginGoogleCompany,
+    loginGoogleProvider
 }

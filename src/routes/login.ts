@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { company, provider, grocer } from '../controllers/login-controller';
 import validator from '../middlewares/login-validator';
-import { googleCompany, googleGrocer } from "../controllers/login-google-controller";
+import { googleCompany, googleGrocer, googleProvider } from "../controllers/login-google-controller";
 
 const router = Router();
 
@@ -10,5 +10,6 @@ router.post('/provider', validator.params('email_provider', 'password_provider')
 router.post('/grocer', validator.params('email_grocer', 'password_grocer'), validator.validatorParams, grocer);
 router.post('/google/company', googleCompany);
 router.post('/google/grocer', googleGrocer);
+router.post('/google/provider', googleProvider);
 
 export default router;
