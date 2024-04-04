@@ -43,7 +43,7 @@ export const company = async (req: Request, res: Response) => {
                     res.status(500).json({ "error": error.message });
                 }
             } else {
-                generateWelcomeEmail(data.email_company, data.name_company);
+                generateWelcomeEmail(data.email_company, data.name_company,'company');
                 res.status(200).json({ "Status": result[0][0].message_text });
             }
         })
@@ -102,7 +102,7 @@ export const provider = async (req: Request, res: Response) => {
                     res.status(500).json({ "error": error.message });
                 }
             } else {
-                generateWelcomeEmail(data.email_provider, data.name_provider);
+                generateWelcomeEmail(data.email_provider, data.name_provider,'provider');
                 res.status(200).json({ "Status": result[0][0].message_text });
             }
         });
@@ -165,7 +165,7 @@ export const grocer = async (req: Request, res: Response) => {
                 }
 
             } else {
-                generateWelcomeEmail(data.email_grocer, data.name_grocer);
+                generateWelcomeEmail(data.email_grocer, data.name_grocer,'grocer');
                 res.status(200).json({ "Status": result[0][0].message_text });
             }
         })
