@@ -1,0 +1,500 @@
+create database ProveerTen;
+use ProveerTen;
+
+-- Roles
+create table rol 
+(
+name_rol varchar (25) primary key
+);
+insert into rol (name_rol) values ('company');
+insert into rol (name_rol) values ('provider');
+insert into rol (name_rol) values ('grocer');
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+-- CompaÃ±ia
+
+create table company
+(
+nit_company varchar (15) primary key,
+name_company varchar (100) unique not null,
+email_company varchar (55) unique not null,
+password_company varchar (100) not null,
+national_line_company varchar (20) not null,
+profile_photo_company varchar (100) null,
+cover_photo_company varchar (100) null,
+foundation_company date null,
+description_company varchar(255) null,
+fk_name_rol varchar (25), 
+foreign key (fk_name_rol) references rol (name_rol)
+);
+
+
+-- Procedimiento de insertar compañia
+delimiter //
+create procedure insertCompany
+-- insertCompany
+(
+ in nit_company varchar (15),
+ in name_company varchar (100),
+ in email_company varchar (55),
+ in password_company varchar (100),
+ in national_line_company varchar (20),
+ in profile_photo_company varchar (100),
+ in cover_photo_company varchar (100),
+ in foundation_company date,
+ in description_company varchar(255),
+ in name_rol varchar (25),
+ out message_text varchar (255)
+)
+begin
+    declare count_company int;
+    declare error_message varchar(255);
+    select count(*) into count_company from company where company.email_company = email_company;
+    if count_company > 0 then
+        set error_message = 'error company user already exists';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message ;
+    else
+        insert into company (
+	nit_company,
+	name_company,
+	email_company,
+	password_company,
+	national_line_company,
+	profile_photo_company,
+	cover_photo_company,
+	foundation_company,
+	description_company,
+    fk_name_rol
+        ) values (
+            nit_company,
+			name_company,
+			email_company,
+			password_company,
+			national_line_company,
+			profile_photo_company,
+			cover_photo_company,
+			foundation_company,
+			description_company,
+            name_rol
+		);
+        set message_text = 'The company was successfully entered';
+    end if;
+    select message_text;
+end //
+delimiter ;
+
+-- Procedimiento para traerse la data de la compania
+-- Principal uso "Login"
+delimiter **
+create procedure get_data_company (in _email_company varchar(55))
+begin
+	declare count_company int;
+	declare error_message varchar(65);
+    select count(*) into count_company from company where email_company = _email_company;
+    if count_company = 0 then 
+       set error_message = 'error, company user does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+	else
+		select nit_company, email_company, password_company, fk_name_rol from company where email_company = _email_company;
+    end if;
+end **
+
+
+-- sp para traer la data del perfil de la compania
+delimiter //
+create procedure get_data_profile_company
+(
+in _nit_company varchar (15)
+)
+begin
+select nit_company, name_company, email_company,national_line_company,profile_photo_company,cover_photo_company,foundation_company,description_company from company where nit_company = _nit_company;
+end //
+delimiter ;
+
+delimiter //
+
+create procedure getCompany_EmailExist (
+    in email_company_param varchar(55),
+    out message_text varchar(255)
+)
+begin
+    declare countCompany int;
+    declare error_message varchar(255);
+
+    select count(*) into countCompany from company where email_company = email_company_param;
+
+    if countCompany = 0 then
+        set error_message = 'error, does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+    else
+        set message_text = 'The company exists';
+    end if;
+
+    select message_text;
+end //
+
+delimiter ;
+
+delimiter //
+
+create procedure updatePasswordCompany (
+    in email_company varchar (55),
+	in password_company varchar (100),
+    out message_text varchar(255)
+)
+begin
+    declare countCompany int;
+    declare error_message varchar(255);
+
+    select count(*) into countCompany from company where company.email_company = email_company;
+
+    if countCompany = 0 then
+        set error_message = 'error, does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+    else
+		update company set company.password_company = password_company where company.email_company = email_company;
+        set message_text = 'company password update successful';
+    end if;
+
+    select message_text;
+end //
+
+delimiter ;
+
+
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+
+-- Proveedor
+create table provider (
+document_provider varchar (10) primary key,
+name_provider varchar (50) not null,
+last_name_provider varchar (40) not null,
+email_provider varchar (55) unique not null,
+password_provider varchar (100) not null,
+profile_photo_provider varchar (100) null, 
+fk_nit_company varchar (15), 
+foreign key (fk_nit_company) references company (nit_company),
+fk_name_rol varchar (25), 
+foreign key (fk_name_rol) references rol (name_rol)
+);
+create table locationProvider(
+fk_document_locationProvider varchar (10), 
+foreign key (fk_document_locationProvider) references Provider (document_provider),
+city_provider varchar (15),
+neighborhood varchar (40) not null,
+street varchar (30) not null,
+number_street varchar (25)
+);
+create table phoneProvider(
+fk_document_phoneProvider varchar (10), 
+foreign key (fk_document_phoneProvider) references Provider (document_provider),
+number_provider varchar (15)
+);
+
+
+delimiter //
+
+create procedure insertProvider
+-- insertProvider
+(
+in document_provider varchar (10),
+in name_provider varchar (50),
+in last_name_provider varchar (40),
+in email_provider varchar (55), 
+in password_provider varchar (100),
+in profile_photo_provider varchar (100),
+in fk_nit_company varchar (15),
+in name_rol varchar (25),
+in city_provider varchar (15),
+in neighborhood varchar (40),
+in street varchar (30),
+in number_street varchar (25),
+in number_provider varchar (15),
+out message_text varchar (255)
+)
+begin
+    declare count_provider int;
+    declare error_message varchar(255);
+    select count(*) into count_provider from provider where provider.email_provider = email_provider;
+    if count_provider > 0 then
+        set error_message = 'error provider user already exists';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message ;
+    else
+        insert into provider (
+	document_provider,
+	name_provider,
+	last_name_provider,
+	email_provider, 
+	password_provider,
+    profile_photo_provider,
+	fk_nit_company,
+    fk_name_rol
+        ) values (
+            document_provider,
+	name_provider,
+	last_name_provider,
+	email_provider, 
+	password_provider,
+    profile_photo_provider,
+	fk_nit_company,
+    name_rol
+		);
+        insert into locationProvider (
+        fk_document_locationProvider, 
+		city_provider ,
+		neighborhood,
+		street,
+		number_street) values 
+        (
+        document_provider, 
+		city_provider,
+		neighborhood,
+		street,
+		number_street
+        );
+        insert into phoneProvider (
+        fk_document_phoneProvider,
+        number_provider
+        ) values (
+        document_provider,
+        number_provider
+        );
+        set message_text = 'The provider was successfully entered';
+    end if;
+    select message_text;
+end //
+
+delimiter ;
+
+-- Procedimiento para traerse la data del proveedor 
+-- Principal uso "Login"
+delimiter //
+create procedure get_data_provider (in _email_provider varchar(55))
+begin
+	declare count_provider int;
+	declare error_message varchar(65);
+    select count(*) into count_provider from provider where email_provider = _email_provider;
+    if count_provider = 0 then 
+       set error_message = 'error, provider user does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+	else
+		select document_provider, email_provider, password_provider, fk_name_rol from provider where email_provider = _email_provider;
+    end if;
+end //
+
+-- sp para traer la data del perfil del proveedor
+delimiter //
+create procedure get_data_profile_provider
+(
+in document_provider varchar (10)
+)
+begin
+select document_provider,name_provider,last_name_provider,email_provider,profile_photo_provider,fk_nit_company,city_provider,neighborhood,street,number_street,number_provider from provider inner join locationProvider on document_provider = fk_document_locationProvider 
+inner join phoneProvider on document_provider = fk_document_phoneProvider where provider.document_provider = document_provider;
+end //
+delimiter ;
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+-- Tendero
+
+create table grocer (
+document_grocer varchar (10) primary key,
+name_grocer varchar (40) not null,
+last_name_grocer varchar (40) not null,
+email_grocer varchar (55) unique not null,
+name_store varchar (50) not null,
+profile_photo_grocer varchar (100) null,
+cover_photo_grocer varchar (100) null,
+password_grocer varchar (100),
+fk_name_rol varchar (25), 
+foreign key (fk_name_rol) references rol (name_rol)
+);
+
+create table locationGrocer (
+fk_document_locationGrocer varchar (10),
+foreign key (fk_document_locationGrocer) references grocer (document_grocer),
+city_grocer varchar (40) not null,
+neighborhood varchar (40) not null,
+street varchar (30) not null,
+number_street varchar (25),
+apartment varchar (25)
+);
+
+create table phoneGrocer (
+fk_document_phoneGrocer varchar (10),
+foreign key (fk_document_phoneGrocer) references grocer (document_grocer),
+number_grocer varchar (15)
+);
+
+
+delimiter //
+
+create procedure insertGrocer
+-- insertGrocer
+(
+in document_grocer varchar (10),
+in name_grocer varchar (40),
+in last_name_grocer varchar (40),
+in email_grocer varchar (55),
+in name_store varchar (50),
+in profile_photo_grocer varchar (100),
+in cover_photo_grocer varchar (100),
+in city_grocer varchar (40),
+in password_grocer varchar (100),
+in name_rol varchar (25),	
+in neighborhood varchar (40),
+in street varchar (30),
+in number_street varchar (25),
+in apartment varchar (25),
+in number_grocer varchar (15),
+out message_text varchar (255)
+)
+begin
+    declare count_grocer int;
+    declare error_message varchar(255);
+    select count(*) into count_grocer from grocer where grocer.email_grocer = email_grocer;
+    if count_grocer > 0 then
+        set error_message = 'error grocer user already exists';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message ;
+    else
+        insert into grocer (
+document_grocer,
+name_grocer,
+last_name_grocer,
+email_grocer,
+name_store,
+profile_photo_grocer,
+cover_photo_grocer,
+password_grocer,
+fk_name_rol
+        ) values (
+document_grocer,
+name_grocer,
+last_name_grocer,
+email_grocer,
+name_store,
+profile_photo_grocer,
+cover_photo_grocer,
+password_grocer,
+name_rol
+		);
+        insert into locationGrocer (
+        fk_document_locationGrocer,
+        city_grocer,
+		neighborhood,
+		street,
+		number_street,
+		apartment
+        ) 
+        values 
+        (
+        document_grocer,
+        city_grocer,
+		neighborhood,
+		street,
+		number_street,
+		apartment
+        );
+        insert into phoneGrocer (
+        fk_document_phoneGrocer,
+        number_grocer
+        ) values (
+        document_grocer,
+        number_grocer
+        );
+        set message_text = 'The grocer was successfully entered';
+    end if;
+    select message_text;
+end //
+
+delimiter ;
+
+-- Procedimiento para traerse la data del tendero 
+-- Principal uso "Login"
+delimiter //
+create procedure get_data_grocer (in _email_grocer varchar(55))
+begin
+	declare count_grocer int;
+	declare error_message varchar(65);
+    select count(*) into count_grocer from grocer where email_grocer = _email_grocer;
+    if count_grocer = 0 then 
+       set error_message = 'error, grocer user does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+	else
+		select document_grocer, email_grocer, password_grocer, fk_name_rol from grocer where email_grocer = _email_grocer;
+    end if;
+end // 
+delimiter ;
+
+-- sp para traer la data del perfil del tendero
+delimiter //
+create procedure get_data_profile_grocer
+(
+in document_grocer varchar (10)
+)
+begin
+select document_grocer,name_grocer,last_name_grocer, email_grocer,name_store,profile_photo_grocer,cover_photo_grocer,city_grocer,neighborhood,street,number_street,apartment,number_grocer from grocer inner join locationGrocer on document_grocer = fk_document_locationGrocer 
+inner join phoneGrocer on document_grocer = fk_document_phoneGrocer where grocer.document_grocer = document_grocer;
+end //
+
+delimiter //
+
+create procedure getGrocerEmailExist (
+    in email_grocer_param varchar(55),
+    out message_text varchar(255)
+)
+begin
+    declare countGrocer int;
+    declare error_message varchar(255);
+
+    select count(*) into countGrocer from grocer where email_grocer = email_grocer_param;
+
+    if countGrocer = 0 then
+        set error_message = 'error, does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+    else
+        set message_text = 'The grocer exists';
+    end if;
+
+    select message_text;
+end //
+
+delimiter ;
+
+delimiter //
+
+create procedure updatePassword_Grocer (
+    in email_grocer varchar(55),
+    in password_grocer varchar(100),
+    out message_text varchar(255)
+)
+begin
+    declare countGrocer int;
+    declare error_message varchar(255);
+
+SELECT 
+    COUNT(*)
+INTO countGrocer FROM
+    grocer
+WHERE
+    grocer.email_grocer = email_grocer;
+
+    if countGrocer = 0 then
+        set error_message = 'error, does not exist';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+    else
+        update grocer set grocer.password_grocer = password_grocer where grocer.email_grocer = email_grocer;
+        set message_text = 'grocer password update successful';
+    end if;
+
+SELECT message_text;
+end //
+
+delimiter ;
+
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+
