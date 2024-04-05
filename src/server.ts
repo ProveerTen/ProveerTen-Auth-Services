@@ -43,7 +43,7 @@ class Server {
         // Body Parser
         // Parseo body
         this.app.use(express.json());
-        const allowedOrigins = ['https://proveerten.netlify.app','https://proveer-ten-front-end-git-hu-featurechat-bryctans-projects.vercel.app','http://localhost:4200','https://zealous-coast-043f7420f.5.azurestaticapps.net'];
+        const allowedOrigins = ['https://proveerten.netlify.app','https://proveerten-frontend.vercel.app','http://localhost:4200','https://zealous-coast-043f7420f.5.azurestaticapps.net'];
         this.app.use(cors({ credentials: true, origin: allowedOrigins }));
 
     }
